@@ -2,8 +2,8 @@
 Contributors: simonwheatley, codeforthepeople, s1m0nd
 Tags: twitter, tweet, twitter search, hashtag, summize, twitter profile, tweet stream, tweet feed
 Requires at least: 3.1.0
-Tested up to: 3.4.1
-Stable tag: 2.9
+Tested up to: 3.5
+Stable tag: 3.0
 
 Track Twitter search results, a Twitter hashtag, or a Twitter profile using sidebar widgets.
 
@@ -37,6 +37,8 @@ Plugin initially produced on behalf of [WordCamp UK, 2009](http://wordcamp.org.u
 
 Any issues: [contact me](http://www.simonwheatley.co.uk/contact-me/).
 
+Development for [this plugin is hosted on Github](https://github.com/cftp/twitter-tracker), feel free to fork and submit issues there.
+
 == Installation ==
 
 The plugin is simple to install:
@@ -55,10 +57,16 @@ Tightened up security for users on WordPress multisite, upgrade recommended.
 
 == Change Log ==
 
+= v3.0 =
+
+4 January, 2013
+
+* ENHANCEMENT: Allow each post/page/custom post type to override the Profile Widget username
+
 = v2.9 =
 
-* Properly escape values in widget form for users who can't use unfiltered_html
-* Limit HTML elements available in preamble and html_after for users who can't use unfiltered_html
+* BUGFIX: Properly escape values in widget form for users who can't use unfiltered_html
+* BUGFIX: Limit HTML elements available in preamble and html_after for users who can't use unfiltered_html
 
 = v2.8.2 =
 
