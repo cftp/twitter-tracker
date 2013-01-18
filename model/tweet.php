@@ -59,13 +59,13 @@ class Tweet
 		}
 
 		$trans = array(
-			$this->pluralise( '%d year', '%d years', $count ),
-			$this->pluralise( '%d month', '%d months', $count ),
-			$this->pluralise( '%d week', '%d weeks', $count ),
-			$this->pluralise( '%d day', '%d days', $count ),
-			$this->pluralise( '%d hour', '%d hours', $count ),
-			$this->pluralise( '%d minute', '%d minutes', $count ),
-			$this->pluralise( '%d second', '%d seconds', $count )
+			$this->pluralise( __('%d year', 'twitter-tracker'), __('%d years', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d month', 'twitter-tracker'), __('%d months', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d week', 'twitter-tracker'), __('%d weeks', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d day', 'twitter-tracker'), __('%d days', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d hour', 'twitter-tracker'), __('%d hours', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d minute', 'twitter-tracker'), __('%d minutes', 'twitter-tracker'), $count ),
+			$this->pluralise( __('%d second', 'twitter-tracker'), __('%d seconds', 'twitter-tracker'), $count )
 		);
 
 		$basic = sprintf( $trans[$i], $count );
@@ -74,21 +74,21 @@ class Tweet
 			$seconds2 = $chunks[$i + 1];
 			if ( 0 != $count2 = floor( ($since - $seconds * $count) / $seconds2) ) {
 				$trans = array(
-					$this->pluralise( 'a year', '%d years', $count2 ),
-					$this->pluralise( 'a month', '%d months', $count2 ),
-					$this->pluralise( 'a week', '%d weeks', $count2 ),
-					$this->pluralise( 'a day', '%d days', $count2 ),
-					$this->pluralise( 'an hour', '%d hours', $count2 ),
-					$this->pluralise( 'a minute', '%d minutes', $count2 ),
-					$this->pluralise( 'a second', '%d seconds', $count2 )
+					$this->pluralise( __('a year', 'twitter-tracker'), __('%d years', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('a month', 'twitter-tracker'), __('%d months', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('a week', 'twitter-tracker'), __('%d weeks', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('a day', 'twitter-tracker'), __('%d days', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('an hour', 'twitter-tracker'), __('%d hours', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('a minute', 'twitter-tracker'), __('%d minutes', 'twitter-tracker'), $count2 ),
+					$this->pluralise( __('a second', 'twitter-tracker'), __('%d seconds', 'twitter-tracker'), $count2 )
 				);
 				$additional = sprintf( $trans[$i + 1], $count2 );
 			}
 			
-			$final = sprintf( __( 'about %s, %s ago' ), $basic, $additional );
+			$final = sprintf( __( 'about %s, %s ago', 'twitter-tracker' ), $basic, $additional );
 			return $final;
 		}
-		$final = sprintf( __( 'about %s ago' ), $basic );
+		$final = sprintf( __( 'about %s ago', 'twitter-tracker' ), $basic );
 		return $final;
 	}
 	
