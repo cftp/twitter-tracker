@@ -3,7 +3,7 @@ Contributors: simonwheatley, codeforthepeople, s1m0nd
 Tags: twitter, tweet, twitter search, hashtag, summize, twitter profile, tweet stream, tweet feed
 Requires at least: 3.1.0
 Tested up to: 3.5
-Stable tag: 3.0
+Stable tag: 3.1
 
 Track Twitter search results, a Twitter hashtag, or a Twitter profile using sidebar widgets.
 
@@ -31,6 +31,10 @@ These notes mainly for developers:
 
 `tt_allowed_html` filter – WARNING – incorrect use of this filter could make your website vulnerable to cross-site scripting attacks; if in doubt, do not use it. Amend the HTML elements and attributes allowed in the preamble and HTML after values. This filter passes a second param specifying the context the allowed HTML is for.
 
+== Translations ==
+
+* Dutch translation by Milo van der Linden of [De OpenGeoGroep](http://www.opengeogroep.nl/)
+
 == Provenance and plans ==
 
 Plugin initially produced on behalf of [WordCamp UK, 2009](http://wordcamp.org.uk). Initial version 2 development funded by SamFry Ltd.
@@ -51,11 +55,21 @@ The plugin is simple to install:
 
 == Upgrade Notice ==
 
+= v3.1 =
+
+Added Dutch translation, no other change.
+
 = v2.9 =
 
 Tightened up security for users on WordPress multisite, upgrade recommended.
 
 == Change Log ==
+
+= v3.1 =
+
+18 January, 2013
+
+* TRANSLATION: Added Dutch translation
 
 = v3.0 =
 
