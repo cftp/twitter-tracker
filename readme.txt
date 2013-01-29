@@ -3,7 +3,7 @@ Contributors: simonwheatley, codeforthepeople, s1m0nd
 Tags: twitter, tweet, twitter search, hashtag, summize, twitter profile, tweet stream, tweet feed
 Requires at least: 3.1.0
 Tested up to: 3.5
-Stable tag: 3.1
+Stable tag: 3.2
 
 Track Twitter search results, a Twitter hashtag, or a Twitter profile using sidebar widgets.
 
@@ -34,6 +34,7 @@ These notes mainly for developers:
 == Translations ==
 
 * Dutch translation by Milo van der Linden of [De OpenGeoGroep](http://www.opengeogroep.nl/)
+* Slovak translation by Branco Radenovich of [Web Hosting Geeks](http://webhostinggeeks.com/user-reviews/)
 
 == Provenance and plans ==
 
@@ -55,15 +56,21 @@ The plugin is simple to install:
 
 == Upgrade Notice ==
 
-= v3.1 =
+= v3.2 =
 
-Added Dutch translation, no other change.
+Added Slovak and Dutch translations, no other change.
 
 = v2.9 =
 
 Tightened up security for users on WordPress multisite, upgrade recommended.
 
 == Change Log ==
+
+= v3.2 =
+
+29 January, 2013
+
+* TRANSLATION: Added Slovak translation
 
 = v3.1 =
 
