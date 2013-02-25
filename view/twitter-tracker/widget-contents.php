@@ -13,7 +13,7 @@
 	    <div class="info">
 			<a target="_blank" class="tweet-link" href="<?php echo esc_url( $tweet->link ); ?>" title="<?php __( 'View tweet', 'twitter-tracker' ); ?>"><?php echo esc_html( $tweet->time_since() );  ?></a>
 		</div>
-	    <p class="clearleft"/>
+	    <p class="clearleft"></p>
 	</li>
 <?php endforeach; ?>
 </ol>
