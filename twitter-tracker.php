@@ -4,7 +4,7 @@ Plugin Name: Twitter Tracker
 Plugin URI: http://wordpress.org/extend/plugins/twitter-tracker/
 Description: Tracks the search results on Twitter search or Twitter profile in a sidebar widget.
 Author: Simon Wheatley (Code for the People)
-Version: 3.2
+Version: 3.2.1
 Author URI: http://codeforthepeople.com/
 */
 
