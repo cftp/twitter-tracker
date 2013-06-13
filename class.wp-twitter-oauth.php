@@ -193,7 +193,7 @@ class WP_Twitter_OAuth {
   	
   	switch ( $method ) {
   		case 'GET' :
-  			$response = wp_remote_get( $url );
+  			$response = wp_remote_get( $url, $args );
   			break;
   		default:
   			return new WP_Error( 'unsupported_http_method', sprintf( __( 'The HTTP method, %s, which you requested is not supported', 'twitter-tracker' ), $method ) );
