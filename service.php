@@ -16,186 +16,19 @@ GNU General Public License for more details.
 
 defined( 'ABSPATH' ) or die();
 
-class Template extends \EMM\Template {
-
-	public function item( $id, $tab ) {
-		?>
-		<div id="emm-item-{{ data.id }}" class="emm-item-area" data-id="{{ data.id }}">
-			<div class="emm-item-container clearfix">
-				<div class="emm-item-thumb">
-					<img src="{{ data.thumbnail }}">
-				</div>
-				<div class="emm-item-main">
-					<div class="emm-item-author">
-						<span class="emm-item-author-name">{{ data.meta.user.name }}</span>
-						<span class="emm-item-author-screen-name"><span class="emm-item-author-at">@</span>{{ data.meta.user.screen_name }}</span>
-					</div>
-					<div class="emm-item-content">
-						{{{ data.content }}}
-					</div>
-					<div class="emm-item-date">
-						{{ data.date }}
-					</div>
-				</div>
-			</div>
-		</div>
-		<a href="#" id="emm-check-{{ data.id }}" data-id="{{ data.id }}" class="check" title="<?php esc_attr_e( 'Deselect', 'emm' ); ?>">
-			<div class="media-modal-icon"></div>
-		</a>
-		<?php
-	}
-
-	public function thumbnail( $id, $tab ) {
-		?>
-		<?php
-	}
-
-	public function search( $id, $tab ) {
-
-		# @TODO move the spinner out of here and into the base class
-
-		switch ( $tab ) {
-
-			case 'hashtag':
-
-				?>
-				<div class="emm-toolbar-container clearfix">
-					<input
-						type="text"
-						name="hashtag"
-						value="{{ data.params.hashtag }}"
-						class="emm-input-text emm-input-search"
-						size="30"
-						placeholder="<?php esc_attr_e( 'Enter a Hashtag', 'emm' ); ?>"
-					>
-					<div class="spinner"></div>
-				</div>
-				<?php
-
-				break;
-
-			case 'by_user':
-
-				?>
-				<div class="emm-toolbar-container clearfix">
-					<input
-						type="text"
-						name="by_user"
-						value="{{ data.params.by_user }}"
-						class="emm-input-text emm-input-search"
-						size="30"
-						placeholder="<?php esc_attr_e( 'Enter a Twitter Username', 'emm' ); ?>"
-					>
-					<div class="spinner"></div>
-				</div>
-				<?php
-
-				break;
-
-			case 'to_user':
-
-				?>
-				<div class="emm-toolbar-container clearfix">
-					<input
-						type="text"
-						name="to_user"
-						value="{{ data.params.to_user }}"
-						class="emm-input-text emm-input-search"
-						size="30"
-						placeholder="<?php esc_attr_e( 'Enter a Twitter Username', 'emm' ); ?>"
-					>
-					<div class="spinner"></div>
-				</div>
-				<?php
-
-				break;
-
-			case 'location':
-
-				?>
-				<div id="emm_twitter_map_canvas"></div>
-				<div class="emm-toolbar-container clearfix">
-					<input
-						id="<?php echo esc_attr( $id ); ?>"
-						type="hidden"
-						name="location"
-						value="{{ data.params.location }}"
-					>
-					<input
-						type="text"
-						name="q"
-						value="{{ data.params.q }}"
-						class="emm-input-text emm-input-search"
-						size="30"
-						placeholder="<?php esc_attr_e( 'Search Twitter', 'emm' ); ?>"
-					>
-					<select
-						id="<?php echo esc_attr( $id ); ?>-radius"
-						type="text"
-						name="radius"
-						class="emm-input-text emm-input-select"
-						placeholder="<?php esc_attr_e( 'Search Twitter', 'emm' ); ?>"
-					>
-					<?php foreach ( array( 1, 5, 10, 20, 50, 100, 200 ) as $km ) { ?>
-						<option value="<?php echo absint( $km ); ?>"><?php printf( esc_html__( 'Within %skm', 'emm' ), $km ); ?></option>
-					<?php } ?>
-					</select>
-					<div class="spinner"></div>
-				</div>
-				<?php
-
-				break;
-
-			case 'all':
-			default:
-
-				?>
-				<div class="emm-toolbar-container clearfix">
-					<input
-						type="text"
-						name="q"
-						value="{{ data.params.q }}"
-						class="emm-input-text emm-input-search"
-						size="30"
-						placeholder="<?php esc_attr_e( 'Search Twitter', 'emm' ); ?>"
-					>
-					<div class="spinner"></div>
-				</div>
-				<?php
-
-				break;
-
-		}
-
-	}
-
-}
-
-class Service extends TT_Service {
+class TT_Service {
 
 	public $credentials = null;
 
 	public function __construct() {
 
-		# Go!
-		$this->set_template( new Template );
-
 	}
 
 	public function load() {
 
-		$emm = \Extended_Media_Manager::init();
-
-		wp_enqueue_script(
-			'emm-service-twitter',
-			$emm->plugin_url( 'services/twitter/js.js' ),
-			array( 'jquery', 'emm' ),
-			$emm->plugin_ver( 'services/twitter/js.js' )
-		);
-
 	}
 
-	public function request( array $request ) {
+	public function request_search( array $request ) {
 
 		if ( is_wp_error( $connection = $this->get_connection() ) )
 			return $connection;
@@ -239,13 +72,13 @@ class Service extends TT_Service {
 		# @TODO switch the twitter oauth class over to wp http api:
 		if ( 200 == $connection->http_code ) {
 
-			return $this->response( $response );
+			return $this->response( $response->statuses );
 
 		} else {
 
-			return new \WP_Error(
-				'emm_twitter_failed_request',
-				sprintf( __( 'Could not connect to Twitter (error %s).', 'emm' ),
+			return new WP_Error(
+				'tt_twitter_failed_request',
+				sprintf( __( 'Could not connect to Twitter (error %s).', 'twitter-tracker' ),
 					esc_html( $connection->http_code )
 				)
 			);
@@ -254,7 +87,49 @@ class Service extends TT_Service {
 
 	}
 
-	public function status_url( $status ) {
+	public function request_user_timeline( $screen_name, $args = array() ) {
+
+		if ( is_wp_error( $connection = $this->get_connection() ) )
+			return $connection;
+
+		$defaults = array( 
+			'count'           => 20,
+			'exclude_replies' => false,
+		);
+		$args = wp_parse_args( $args, $defaults );
+
+		array_walk( $args, array( $this, 'bool_to_str' ) );
+
+		$args[ 'screen_name' ] = $screen_name;
+		$args[ 'contributor_details' ] = true;
+
+		$response = $connection->get( sprintf( '%s/statuses/user_timeline.json', untrailingslashit( $connection->host ) ), $args );
+
+		// var_dump( $response );
+		// var_dump( $connection );
+		
+		
+
+
+		# @TODO switch the twitter oauth class over to wp http api:
+		if ( 200 == $connection->http_code ) {
+
+			return $this->timeline_response( $response );
+
+		} else {
+
+			return new WP_Error(
+				'tt_twitter_failed_request',
+				sprintf( __( 'Could not connect to Twitter (error %s).', 'twitter-tracker' ),
+					esc_html( $connection->http_code )
+				)
+			);
+
+		}
+
+	}
+
+	public static function status_url( $status ) {
 
 		return sprintf( 'https://twitter.com/%s/status/%s',
 			$status->user->screen_name,
@@ -263,16 +138,36 @@ class Service extends TT_Service {
 
 	}
 
-	public function status_content( $status ) {
+	public static function status_content( $status ) {
 
 		$text = $status->text;
 
 		# @TODO more processing (hashtags, @s etc)
 		$text = make_clickable( $text );
 		$text = str_replace( ' href="', ' target="_blank" href="', $text );
+		
+		// En-link-ify all the #hashtags in the message text
+		$hashtag_regex = '/(^|\s)#(\w*[a-zA-Z_]+\w*)/';
+		// preg_match_all( $hashtag_regex, $text, $preg_output );
+		$text = preg_replace( $hashtag_regex, '\1<a href="http://search.twitter.com/search?q=%23\2">#\2</a>', $text );
+		
+		// En-link-ify all the @usernames in the message text
+		$username_regex = '/(^\.?|\s|)\@(\w*[a-zA-Z_]+\w*)/';
+		// preg_match_all( $username_regex, $text, $preg_output );
+		$text = preg_replace( $username_regex, '\1<a href="http://twitter.com/\2">@\2</a>', $text );
 
 		return $text;
 
+	}
+
+	public static function status_retweeted( $status ) {
+		return isset( $status->retweeted_status ) && $status->retweeted_status;
+	}
+
+	public static function status_original_twit( $status ) {
+		if ( ! isset( $status->retweeted_status ) || ! $status->retweeted_status )
+			return;
+		return $status->retweeted_status->user->screen_name;
 	}
 
 	public function get_max_id( $next ) {
@@ -286,63 +181,85 @@ class Service extends TT_Service {
 
 	}
 
-	public function response( $r ) {
+	public function search_response( $r ) {
 
 		if ( !isset( $r->statuses ) or empty( $r->statuses ) )
 			return false;
 
-		$response = new \EMM\Response;
+		$response = new TT_Response;
 
 		# @TODO $r->search_metadata->next_results isn't always set, causes notice
 		$response->add_meta( 'max_id', self::get_max_id( $r->search_metadata->next_results ) );
 
-		foreach ( $r->statuses as $status ) {
-
-			$item = new \EMM\Response_Item;
-
-			$item->set_id( $status->id_str );
-			$item->set_url( self::status_url( $status ) );
-			$item->set_content( self::status_content( $status ) );
-			$item->set_thumbnail( is_ssl() ? $status->user->profile_image_url_https : $status->user->profile_image_url );
-			$item->set_date( strtotime( $status->created_at ) );
-			$item->set_date_format( 'g:i A - j M y' );
-
-			$item->add_meta( 'user', array(
-				'name'        => $status->user->name,
-				'screen_name' => $status->user->screen_name,
-			) );
-
-			$response->add_item( $item );
-
-		}
+		$this->response_statuses( $response, $r->statuses );
 
 		return $response;
 
 	}
 
+	public function timeline_response( $statuses ) {
+
+		if ( !isset( $statuses ) or empty( $statuses ) )
+			return false;
+
+		$response = new TT_Response;
+
+		// $response->add_meta( 'max_id', self::get_max_id( $r->search_metadata->next_results ) );
+
+		$this->response_statuses( $response, $statuses );
+
+		return $response;
+
+	}
+
+	public function response_statuses( & $response, $statuses ) {
+		foreach ( $statuses as $status ) {
+
+			$item = new TT_Tweet;
+
+			$item->set_id( $status->id_str );
+			$item->set_url( self::status_url( $status ) );
+			$item->set_content( self::status_content( $status ) );
+			$item->set_thumbnail( is_ssl() ? $status->user->profile_image_url_https : $status->user->profile_image_url );
+			$item->set_timestamp( strtotime( $status->created_at ) );
+			$item->set_twit( $status->user->screen_name );
+			$item->set_twit_name( $status->user->name );
+			$item->set_twit_uid( $status->user->id_str );
+			$item->set_retweeted( self::status_retweeted( $status ) );
+			$item->set_original_twit( self::status_original_twit( $status ) );
+			$item->set_reply_to( $status->in_reply_to_status_id_str );
+
+			$response->add_item( $item );
+			error_log( "SW: Item " . print_r( $item , true ) );
+			
+
+		}
+		return $response;
+	}
+
 	public function tabs() {
 		return array(
 			#'welcome' => array(
-			#	'text' => _x( 'Welcome', 'Tab title', 'emm'),
+			#	'text' => _x( 'Welcome', 'Tab title', 'twitter-tracker'),
 			#),
 			'all' => array(
-				'text'    => _x( 'All', 'Tab title', 'emm'),
+				'text'    => _x( 'All', 'Tab title', 'twitter-tracker'),
 				'default' => true
 			),
 			'hashtag' => array(
-				'text' => _x( 'With Hashtag', 'Tab title', 'emm'),
+				'text' => _x( 'With Hashtag', 'Tab title', 'twitter-tracker'),
 			),
 			#'images' => array(
-			#	'text' => _x( 'With Images', 'Tab title', 'emm'),
+			#	'text' => _x( 'With Images', 'Tab title', 'twitter-tracker'),
 			#),
 			'by_user' => array(
-				'text' => _x( 'By User', 'Tab title', 'emm'),
+				'text' => _x( 'By User', 'Tab title', 'twitter-tracker'),
 			),
 			'to_user' => array(
-				'text' => _x( 'To User', 'Tab title', 'emm'),
+				'text' => _x( 'To User', 'Tab title', 'twitter-tracker'),
 			),
 			'location' => array(
-				'text' => _x( 'By Location', 'Tab title', 'emm'),
+				'text' => _x( 'By Location', 'Tab title', 'twitter-tracker'),
 			),
 		);
 	}
@@ -355,12 +272,18 @@ class Service extends TT_Service {
 
 	public function labels() {
 		return array(
-			'title'     => sprintf( __( 'Insert from %s', 'emm' ), 'Twitter' ),
+			'title'     => sprintf( __( 'Insert from %s', 'twitter-tracker' ), 'Twitter' ),
 			# @TODO the 'insert' button text gets reset when selecting items. find out why.
-			'insert'    => __( 'Insert Tweet', 'emm' ),
-			'noresults' => __( 'No tweets matched your search query', 'emm' ),
+			'insert'    => __( 'Insert Tweet', 'twitter-tracker' ),
+			'noresults' => __( 'No tweets matched your search query', 'twitter-tracker' ),
 			'gmaps_url' => set_url_scheme( 'http://maps.google.com/maps/api/js' )
 		);
+	}
+
+	protected function bool_to_str( $arg ) {
+		if ( is_bool( $arg ) )
+			$arg = $arg ? 'true' : 'false';
+		return $arg;
 	}
 
 	private function get_connection() {
@@ -383,9 +306,9 @@ class Service extends TT_Service {
 
 		foreach ( array( 'consumer_key', 'consumer_secret', 'oauth_token', 'oauth_token_secret' ) as $field ) {
 			if ( !isset( $credentials[$field] ) or empty( $credentials[$field] ) ) {
-				return new \WP_Error(
-					'emm_twitter_no_connection',
-					__( 'oAuth connection to Twitter not found.', 'emm' )
+				return new WP_Error(
+					'tt_twitter_no_connection',
+					__( 'oAuth connection to Twitter not found.', 'twitter-tracker' )
 				);
 			}
 		}
@@ -400,7 +323,7 @@ class Service extends TT_Service {
 			$credentials['oauth_token_secret']
 		);
 
-		$connection->useragent = sprintf( 'Extended Media Manager at %s', home_url() );
+		$connection->useragent = sprintf( 'Twitter Tracker at %s', home_url() );
 
 		return $connection;
 
@@ -409,15 +332,10 @@ class Service extends TT_Service {
 	private function get_credentials() {
 
 		if ( is_null( $this->credentials ) )
-			$this->credentials = (array) apply_filters( 'emm_twitter_credentials', array() );
+			$this->credentials = (array) apply_filters( 'tt_twitter_credentials', array() );
 
 		return $this->credentials;
 
 	}
 
 }
-
-add_filter( 'emm_services', function( $services ) {
-	$services['twitter'] = new Service;
-	return $services;
-} );

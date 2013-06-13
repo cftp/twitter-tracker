@@ -190,7 +190,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$this->render( 'widget-contents', $vars );
 	}
 	
-	public function show_profile( $args )
+	public function show_profile( $instance = array() )
 	{
 		$defaults = array (
 			'hide_replies' => false,
@@ -200,12 +200,9 @@ class TwitterTracker extends TwitterTracker_Plugin
 			'html_after' => '',
 			'preamble' => '',
 		);
-		$args = wp_parse_args( $args, $defaults );
-		
-		extract( $args );
+		$instance = wp_parse_args( $instance, $defaults );
 
-		require_once( dirname( __FILE__ ) . '/model/twitter-profile.php' );
-		require_once( dirname( __FILE__ ) . '/model/api-tweet.php' );
+		extract( $instance );
 
 		// Allow the local custom field to overwrite the widget's query, but
 		// only on single post (of any type)
@@ -213,12 +210,26 @@ class TwitterTracker extends TwitterTracker_Plugin
 			if ( $local_username = trim( get_post_meta( $post_id, '_tt_username', true ) ) )
 				$username = $local_username;
 
-		if ( ! $username )
-			return;
-		
-		$search = new TwitterProfile ( $username, $max_tweets, $hide_replies, $include_retweets, $mandatory_hash );
+		require_once( 'class.oauth.php' );
+		require_once( 'class.wp-twitter-oauth.php' );
+		require_once( 'class.response.php' );
+		require_once( 'service.php' );
+
+		$args = array(
+			'count' => max( ($max_tweets * 2), 200 ), // Get *lots* as we have to throw some away later
+		);
+
+		$service = new TT_Service;
+		$response = $service->request_user_timeline( $username, $args );
+
+		if ( $hide_replies )
+			$response->remove_replies();
+
+		if ( ! $include_retweets )
+			$response->remove_retweets();
+
 		$vars = array( 
-			'tweets' => $search->tweets(), 
+			'tweets' => array_slice( $response->items, 0, $max_tweets ),
 			'preamble' => $preamble,
 			'html_after' => $html_after,
 		);
