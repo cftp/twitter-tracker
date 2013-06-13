@@ -1,11 +1,9 @@
 <?php
 
-namespace EMM\Services\Twitter;
-
 # @TODO replace curl stuff with wp http api
 
 /*
- * Soon-to-be-WordPressified version of TwitterOAuth by Abraham Williams (abraham@abrah.am) http://abrah.am
+ * Soon-to-be-WordPressified version of TT_TwitterOAuth by Abraham Williams (abraham@abrah.am) http://abrah.am
  *
  * Uses Twitter API v1.1
  *
@@ -34,7 +32,7 @@ class WP_Twitter_OAuth {
   /* Contains the last HTTP headers returned. */
   public $http_info;
   /* Set the useragnet. */
-  public $useragent = 'WP_TwitterOAuth';
+  public $useragent = 'WP_TT_TwitterOAuth';
   /* Immediately retry the API call if the response was not successful. */
   //public $retry = TRUE;
 
@@ -56,13 +54,13 @@ class WP_Twitter_OAuth {
   function lastAPICall() { return $this->last_api_call; }
 
   /**
-   * construct TwitterOAuth object
+   * construct TT_TwitterOAuth object
    */
   function __construct($consumer_key, $consumer_secret, $oauth_token = NULL, $oauth_token_secret = NULL) {
-    $this->sha1_method = new \TT_OAuthSignatureMethod_HMAC_SHA1();
-    $this->consumer = new \TT_OAuthConsumer($consumer_key, $consumer_secret);
+    $this->sha1_method = new TT_OAuthSignatureMethod_HMAC_SHA1();
+    $this->consumer = new TT_OAuthConsumer($consumer_key, $consumer_secret);
     if (!empty($oauth_token) && !empty($oauth_token_secret)) {
-      $this->token = new \TT_OAuthConsumer($oauth_token, $oauth_token_secret);
+      $this->token = new TT_OAuthConsumer($oauth_token, $oauth_token_secret);
     } else {
       $this->token = NULL;
     }
@@ -78,8 +76,8 @@ class WP_Twitter_OAuth {
     $parameters = array();
     $parameters['oauth_callback'] = $oauth_callback; 
     $request = $this->oAuthRequest($this->requestTokenURL(), 'GET', $parameters);
-    $token = \TT_OAuthUtil::parse_parameters($request);
-    $this->token = new \TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    $token = TT_OAuthUtil::parse_parameters($request);
+    $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
   }
 
@@ -112,8 +110,8 @@ class WP_Twitter_OAuth {
     $parameters = array();
     $parameters['oauth_verifier'] = $oauth_verifier;
     $request = $this->oAuthRequest($this->accessTokenURL(), 'GET', $parameters);
-    $token = \TT_OAuthUtil::parse_parameters($request);
-    $this->token = new \TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    $token = TT_OAuthUtil::parse_parameters($request);
+    $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
   }
 
@@ -132,8 +130,8 @@ class WP_Twitter_OAuth {
     $parameters['x_auth_password'] = $password;
     $parameters['x_auth_mode'] = 'client_auth';
     $request = $this->oAuthRequest($this->accessTokenURL(), 'POST', $parameters);
-    $token = \TT_OAuthUtil::parse_parameters($request);
-    $this->token = new \TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
+    $token = TT_OAuthUtil::parse_parameters($request);
+    $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
   }
 

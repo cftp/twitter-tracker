@@ -14,8 +14,6 @@ GNU General Public License for more details.
 
 */
 
-namespace EMM\Services\Twitter;
-
 defined( 'ABSPATH' ) or die();
 
 class Template extends \EMM\Template {
@@ -173,7 +171,7 @@ class Template extends \EMM\Template {
 
 }
 
-class Service extends \EMM\Service {
+class Service extends TT_Service {
 
 	public $credentials = null;
 
@@ -351,7 +349,7 @@ class Service extends \EMM\Service {
 
 	public function requires() {
 		return array(
-			'oauth' => '\OAuthConsumer'
+			'oauth' => 'TT_OAuthConsumer'
 		);
 	}
 
