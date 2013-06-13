@@ -65,9 +65,9 @@ abstract class TT_OAuthSignatureMethod {
   /**
    * Build up the signature
    * NOTE: The output of this function MUST NOT be urlencoded.
-   * the encoding is handled in OAuthRequest when the final
+   * the encoding is handled in TT_OAuthRequest when the final
    * request is serialized
-   * @param OAuthRequest $request
+   * @param TT_OAuthRequest $request
    * @param TT_OAuthConsumer $consumer
    * @param TT_OAuthToken $token
    * @return string
@@ -76,7 +76,7 @@ abstract class TT_OAuthSignatureMethod {
 
   /**
    * Verifies that a given signature is correct
-   * @param OAuthRequest $request
+   * @param TT_OAuthRequest $request
    * @param TT_OAuthConsumer $consumer
    * @param TT_OAuthToken $token
    * @param string $signature
@@ -133,7 +133,7 @@ class TT_OAuthSignatureMethod_PLAINTEXT extends TT_OAuthSignatureMethod {
    *   - Chapter 9.4.1 ("Generating Signatures")
    *
    * Please note that the second encoding MUST NOT happen in the SignatureMethod, as
-   * OAuthRequest handles this!
+   * TT_OAuthRequest handles this!
    */
   public function build_signature($request, $consumer, $token) {
     $key_parts = array(
@@ -216,7 +216,7 @@ abstract class TT_OAuthSignatureMethod_RSA_SHA1 extends TT_OAuthSignatureMethod 
   }
 }
 
-class OAuthRequest {
+class TT_OAuthRequest {
   private $parameters;
   private $http_method;
   private $http_url;
@@ -282,7 +282,7 @@ class OAuthRequest {
 
     }
 
-    return new OAuthRequest($http_method, $http_url, $parameters);
+    return new TT_OAuthRequest($http_method, $http_url, $parameters);
   }
 
   /**
@@ -290,16 +290,16 @@ class OAuthRequest {
    */
   public static function from_consumer_and_token($consumer, $token, $http_method, $http_url, $parameters=NULL) {
     @$parameters or $parameters = array();
-    $defaults = array("oauth_version" => OAuthRequest::$version,
-                      "oauth_nonce" => OAuthRequest::generate_nonce(),
-                      "oauth_timestamp" => OAuthRequest::generate_timestamp(),
+    $defaults = array("oauth_version" => TT_OAuthRequest::$version,
+                      "oauth_nonce" => TT_OAuthRequest::generate_nonce(),
+                      "oauth_timestamp" => TT_OAuthRequest::generate_timestamp(),
                       "oauth_consumer_key" => $consumer->key);
     if ($token)
       $defaults['oauth_token'] = $token->key;
 
     $parameters = array_merge($defaults, $parameters);
 
-    return new OAuthRequest($http_method, $http_url, $parameters);
+    return new TT_OAuthRequest($http_method, $http_url, $parameters);
   }
 
   public function set_parameter($name, $value, $allow_duplicates = true) {
@@ -840,6 +840,7 @@ class TT_OAuthUtil {
     return $parsed_parameters;
   }
 
+  // @TODO Replace with WordPress add_query_arg method? Note the key and value sorting.
   public static function build_http_query($params) {
     if (!$params) return '';
     // Urlencode both keys and values

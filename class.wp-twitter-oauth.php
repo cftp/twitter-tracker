@@ -75,7 +75,7 @@ class WP_Twitter_OAuth {
   function getRequestToken($oauth_callback) {
     $parameters = array();
     $parameters['oauth_callback'] = $oauth_callback; 
-    $request = $this->oAuthRequest($this->requestTokenURL(), 'GET', $parameters);
+    $request = $this->TT_OAuthRequest($this->requestTokenURL(), 'GET', $parameters);
     $token = TT_OAuthUtil::parse_parameters($request);
     $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
@@ -109,7 +109,7 @@ class WP_Twitter_OAuth {
   function getAccessToken($oauth_verifier) {
     $parameters = array();
     $parameters['oauth_verifier'] = $oauth_verifier;
-    $request = $this->oAuthRequest($this->accessTokenURL(), 'GET', $parameters);
+    $request = $this->TT_OAuthRequest($this->accessTokenURL(), 'GET', $parameters);
     $token = TT_OAuthUtil::parse_parameters($request);
     $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
@@ -129,17 +129,19 @@ class WP_Twitter_OAuth {
     $parameters['x_auth_username'] = $username;
     $parameters['x_auth_password'] = $password;
     $parameters['x_auth_mode'] = 'client_auth';
-    $request = $this->oAuthRequest($this->accessTokenURL(), 'POST', $parameters);
+    $request = $this->TT_OAuthRequest($this->accessTokenURL(), 'POST', $parameters);
     $token = TT_OAuthUtil::parse_parameters($request);
     $this->token = new TT_OAuthConsumer($token['oauth_token'], $token['oauth_token_secret']);
     return $token;
   }
 
   /**
-   * GET wrapper for oAuthRequest.
+   * GET wrapper for TT_OAuthRequest.
    */
   function get($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'GET', $parameters);
+    $response = $this->TT_OAuthRequest($url, 'GET', $parameters);
+    if ( is_wp_error( $response ) )
+    	return $response;
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -147,10 +149,10 @@ class WP_Twitter_OAuth {
   }
   
   /**
-   * POST wrapper for oAuthRequest.
+   * POST wrapper for TT_OAuthRequest.
    */
   function post($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'POST', $parameters);
+    $response = $this->TT_OAuthRequest($url, 'POST', $parameters);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -161,7 +163,7 @@ class WP_Twitter_OAuth {
    * DELETE wrapper for oAuthReqeust.
    */
   function delete($url, $parameters = array()) {
-    $response = $this->oAuthRequest($url, 'DELETE', $parameters);
+    $response = $this->TT_OAuthRequest($url, 'DELETE', $parameters);
     if ($this->format === 'json' && $this->decode_json) {
       return json_decode($response);
     }
@@ -171,11 +173,11 @@ class WP_Twitter_OAuth {
   /**
    * Format and sign an OAuth / API request
    */
-  function oAuthRequest($url, $method, $parameters) {
+  function TT_OAuthRequest($url, $method, $parameters) {
     if (strrpos($url, 'https://') !== 0 && strrpos($url, 'http://') !== 0) {
       $url = "{$this->host}{$url}.{$this->format}";
     }
-    $request = \OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
+    $request = TT_OAuthRequest::from_consumer_and_token($this->consumer, $this->token, $method, $url, $parameters);
     $request->sign_request($this->sha1_method, $this->consumer, $this->token);
 
     switch ($method) {
