@@ -150,44 +150,67 @@ class TwitterTracker extends TwitterTracker_Plugin
 			define( 'MAGPIE_CACHE_AGE', 60 * 15 ); // Fifteen of your Earth minutes
 	}
 	
-	public function show( $args )
+	public function show( $instance )
 	{
 		$defaults = array (
 			'hide_replies' => false,
 			'include_retweets' => false,
 			'mandatory_hash' => '',
-			'max_tweets' => 3,
+			'max_tweets' => 30,
 			'html_after' => '',
 			'preamble' => '',
 		);
-		$args = wp_parse_args( $args, $defaults );
-		extract( $args );
+		$instance = wp_parse_args( $instance, $defaults );
+
+		extract( $instance );
+
+		// Allow the local custom field to overwrite the widget's query
+		if ( is_singular() && is_single() && $post_id = get_queried_object_id() )
+			if ( $local_query = trim( get_post_meta( $post_id, '_tt_query', true ) ) )
+				$twitter_search = $local_query;
 
 		// Let the user know if there's no search query
 		if ( empty( $twitter_search ) ) {
 			$this->render( 'widget-error', array() );
 			return;
 		}
-		require_once( dirname( __FILE__ ) . '/model/twitter-search.php' );
-		require_once( dirname( __FILE__ ) . '/model/tweet.php' );
-		global $post;
-		// Allow the local custom field to overwrite the widget's query
-		if ( is_singular() || is_single() ) {
-			if ( $local_query = trim( get_post_meta( $post->ID, '_tt_query', true ) ) )
-				$twitter_search = $local_query;
-			if ( ! $local_query && ! $twitter_search )
-				return;
+
+		require_once( 'class.oauth.php' );
+		require_once( 'class.wp-twitter-oauth.php' );
+		require_once( 'class.response.php' );
+		require_once( 'service.php' );
+
+		$args = array(
+			'params' => array(
+				'count' => max( ($max_tweets * 2), 200 ), // Get *lots* as we have to throw some away later
+				'q'     => $twitter_search,
+			),
+		);
+
+		$service = new TT_Service;
+		$response = $service->request_search( $args );
+
+		// @TODO Caching!
+
+		if ( is_wp_error( $response ) ) {
+			error_log( "Twitter Tracker response error: " . print_r( $response, true ) );
+			return;			
 		}
-		if ( ! $twitter_search )
-			return;
-		$search = new TwitterSearch ( $twitter_search, $max_tweets, $hide_replies, $mandatory_hash );
+
+		if ( $hide_replies )
+			$response->remove_replies();
+
+		if ( ! $include_retweets )
+			$response->remove_retweets();
+
 		$vars = array( 
-			'tweets' => $search->tweets(), 
+			'tweets' => array_slice( $response->items, 0, $max_tweets ),
 			'preamble' => $preamble,
 			'html_after' => $html_after,
 		);
 		$vars[ 'datef' ] = _x( 'M j, Y @ G:i', 'Publish box date format', 'twitter-tracker' );
 		$this->render( 'widget-contents', $vars );
+
 	}
 	
 	public function show_profile( $instance = array() )
@@ -222,15 +245,17 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$service = new TT_Service;
 		$response = $service->request_user_timeline( $username, $args );
 
+		// @TODO Caching!
+
 		if ( is_wp_error( $response ) ) {
 			error_log( "Twitter Tracker response error: " . print_r( $response, true ) );
-			return;			
+			return;
 		}
 
 		if ( $hide_replies )
 			$response->remove_replies();
 
-		if ( ! $include_retweets )
+		// if ( ! $include_retweets )
 			$response->remove_retweets();
 
 		$vars = array( 

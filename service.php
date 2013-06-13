@@ -72,7 +72,7 @@ class TT_Service {
 		# @TODO switch the twitter oauth class over to wp http api:
 		if ( 200 == $connection->http_code ) {
 
-			return $this->response( $response->statuses );
+			return $this->search_response( $response );
 
 		} else {
 
