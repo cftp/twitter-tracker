@@ -229,7 +229,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$output = $this->capture( 'widget-contents', $vars );
 		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
 		echo $output;
-		$output = "<!-- Cached as $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
+		$output = "<!-- Retrieved from $transient_key, cached at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
 		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
 	}
 
@@ -298,7 +298,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$output = $this->capture( 'widget-contents', $vars );
 		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
 		echo $output;
-		$output = "<!-- Cached as $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
+		$output = "<!-- Retrieved from $transient_key, cached at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
 		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
 	}
 
