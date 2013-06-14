@@ -191,7 +191,6 @@ class TT_Service {
 			$item->set_id( $status->id_str );
 			$item->set_link( self::status_url( $status ) );
 			$item->set_content( self::status_content( $status ) );
-			$item->set_thumbnail( self::status_avatar( $status ) );
 			$item->set_timestamp( strtotime( $status->created_at ) );
 			$item->set_twit( $status->user->screen_name );
 			$item->set_twit_name( $status->user->name );
@@ -200,6 +199,7 @@ class TT_Service {
 			$item->set_original_twit( self::status_original_twit( $status ) );
 			$item->set_reply_to( $status->in_reply_to_status_id_str );
 			$item->set_hashtags( self::status_hashtags( $status ) );
+			$item->set_thumbnail( self::status_avatar( $status ) );
 
 			$response->add_item( $item );
 

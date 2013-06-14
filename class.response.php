@@ -152,6 +152,7 @@ final class TT_Tweet {
 	 * @author simonwheatley
 	 **/
 	public function set_thumbnail( $url ) {
+		$url = apply_filters( 'tt_avatar_url', $url, $this->id, 48, $this );
 		$this->twit_pic = esc_url_raw( $url );
 	}
 

@@ -27,7 +27,9 @@ The HTML output is fairly well classed, but if you need to adapt it you can. Cre
 
 These notes mainly for developers:
 
-`tt_avatar_url` and `tt_avatar_bigger_url` filters – Use this to change the Twitter Avatar URLs provided to the template. The [Twitter Tracker Avatar Cache](http://wordpress.org/extend/plugins/twitter-tracker-avatar-cache/) partner plugin uses these filters to provide cookie stripping caching for these avatars.
+`tt_avatar_url` filters – Use this to change the Twitter Avatar URLs provided to the template. The [Twitter Tracker Avatar Cache](http://wordpress.org/extend/plugins/twitter-tracker-avatar-cache/) partner plugin uses these filters to provide cookie stripping caching for these avatars.
+
+(NOTE: The `tt_avatar_bigger_url` filter no longer exists, as I cannot find a way to access larger icons with the Twitter API.)
 
 `tt_post_types_with_override` filter – Add or remove post types which can override the search query in a search widget.
 
