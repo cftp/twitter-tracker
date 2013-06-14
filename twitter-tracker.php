@@ -210,11 +210,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 			$response->remove_retweets();
 
 		$mandatory_hash = strtolower( trim( ltrim( $mandatory_hash, '#' ) ) );
-		if ( $mandatory_hash ) {
-			error_log( "SW: Hash " . print_r( $mandatory_hash , true ) );
-			
+		if ( $mandatory_hash )
 			$response->remove_without_hash( $mandatory_hash );
-		}
 
 		$vars = array( 
 			'tweets' => array_slice( $response->items, 0, $max_tweets ),
@@ -265,11 +262,17 @@ class TwitterTracker extends TwitterTracker_Plugin
 			return;
 		}
 
-		if ( $hide_replies )
+		if ( $hide_replies ) {
+			error_log( "SW: Hide replies " );
 			$response->remove_replies();
+		}
 
 		if ( ! $include_retweets )
 			$response->remove_retweets();
+
+		$mandatory_hash = strtolower( trim( ltrim( $mandatory_hash, '#' ) ) );
+		if ( $mandatory_hash )
+			$response->remove_without_hash( $mandatory_hash );
 
 		$vars = array( 
 			'tweets' => array_slice( $response->items, 0, $max_tweets ),

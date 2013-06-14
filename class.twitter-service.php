@@ -183,8 +183,10 @@ class TT_Service {
 
 			$item = new TT_Tweet;
 
+			// @TODO Check protected status and drop tweets with it
+
 			$item->set_id( $status->id_str );
-			$item->set_url( self::status_url( $status ) );
+			$item->set_link( self::status_url( $status ) );
 			$item->set_content( self::status_content( $status ) );
 			$item->set_thumbnail( is_ssl() ? $status->user->profile_image_url_https : $status->user->profile_image_url );
 			$item->set_timestamp( strtotime( $status->created_at ) );

@@ -51,6 +51,7 @@ final class TT_Response {
 
 	public function remove_replies() {
 		foreach ( $this->items as $i => & $item )
+			// error_log( "SW: Item $item->in_reply_to_status_id_str : $item->content " );
 			if ( ! is_null( $item->in_reply_to_status_id_str ) )
 				unset( $this->items[ $i ] );
 		$this->items = array_values( $this->items );
@@ -58,11 +59,8 @@ final class TT_Response {
 
 	public function remove_without_hash( $hashtag ) {
 		$hashtag = strtolower( $hashtag );
-		error_log( "SW: Hash " . print_r( $hashtag , true ) );
-		
 		foreach ( $this->items as $i => & $item ) {
 			// Case insensitive in_array search, pls
-			error_log( "SW: Check in  " . implode( ', ', array_map( 'strtolower', $item->hashtags ) ) );
 			if ( ! in_array( $hashtag, array_map( 'strtolower', $item->hashtags ) ) )
 				unset( $this->items[ $i ] );
 		}
@@ -101,17 +99,6 @@ final class TT_Tweet {
 	}
 
 	/**
-	 * Set the Twitter ID
-	 *
-	 * @param string $id The Twitter tweet ID, as a string to prevent issues on 32 bit systems
-	 * @return void
-	 * @author simonwheatley
-	 **/
-	public function set_link( $url ) {
-		$this->link = esc_url_raw( $url );
-	}
-
-	/**
 	 * Set the Twitter user screen name
 	 *
 	 * @param string $twit The Twitter tweet user screen name
@@ -142,8 +129,8 @@ final class TT_Tweet {
 	 * @return void
 	 * @author simonwheatley
 	 **/
-	public function set_url( $url ) {
-		$this->url = esc_url_raw( $url );
+	public function set_link( $url ) {
+		$this->link = esc_url_raw( $url );
 	}
 
 	/**
