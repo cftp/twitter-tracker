@@ -95,14 +95,24 @@ class TT_Twitter_Authentication {
 		add_options_page( 'Twitter Tracker Authentication', 'Twitter Tracker Auth', 'manage_options', 'tt_auth', array( $this, 'settings' ) );
 	}
 
-	public function admin_notices() {
-		if ( isset( $_GET[ 'tt_authenticated' ] ) )
-			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'Thank you for authenticating <strong>@%s</strong> with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
-		if ( isset( $_GET[ 'tt_unauthenticated' ] ) )
-			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have remove the authorisation with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
-	}	
-
 	public function load_settings() {
+
+		// Denied?
+		if ( isset( $_GET[ 'denied' ] ) ) {
+			if ( $_GET[ 'denied' ] == $this->creds[ 'oauth_token' ] ) {
+				$unset_creds = array(
+					'oauth_token',
+					'oauth_token_secret',
+					'user_id',
+					'screen_name',
+					'authenticated',
+				);
+				$this->unset_creds( $unset_creds );
+				nocache_headers();
+				wp_redirect( admin_url( 'options-general.php?page=tt_auth&tt_denied=1' ) );
+				exit;
+			}
+		}
 
 		// Un-authentication request:
 		if ( isset( $_POST[ 'tt_unauthenticate' ] ) ) {
@@ -169,6 +179,15 @@ class TT_Twitter_Authentication {
 		// No authentication process in progress
 
 	}
+
+	public function admin_notices() {
+		if ( isset( $_GET[ 'tt_authenticated' ] ) )
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'Thank you for authenticating <strong>@%s</strong> with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+		if ( isset( $_GET[ 'tt_unauthenticated' ] ) )
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have remove the authorisation with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+		if ( isset( $_GET[ 'tt_denied' ] ) )
+			printf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Authorisation with Twitter was <strong>not</strong> completed.', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+	}	
 	
 	public function queue_new_mentions() {
 		$this->init_oauth();
