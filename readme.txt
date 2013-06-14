@@ -13,6 +13,8 @@ A widget, Twitter Search Tracker, which allows you to specify and display a [Twi
 
 Another widget, Twitter Profile Tracker, allows you to show the tweets from a specific user in your sidebar.
 
+With the profile and search widget, you can choose to only show tweets with a particular hashtag, to control which tweets get shown on your site. You can also elect not to show retweets or "@" replies.
+
 By default this plugin uses a Twitter API to provide avatar images, unfortunately this process triggers Twitter to drop some cookies on visitors. If you want to continue using avatars in your widgets are avoid Twitter cookies, you can use the partner plugin [Twitter Tracker Avatar Cache](http://wordpress.org/extend/plugins/twitter-tracker-avatar-cache/). If you want to avoid the use of cookies, and don't need avatars in your widget (or are hiding the avatars with CSS) then you can use the [Twitter Tracker Blank Avatars](http://wordpress.org/extend/plugins/twitter-tracker-blank-avatars/) partner plugin.
 
 == Other notes ==
@@ -215,5 +217,5 @@ Fixes the plugin to work with Twitter's new API (and new constraints). After ins
 
 == Screenshots ==
 
-1. Showing the widget settings
-2. Showing the unstyled output (use your own CSS to make this look as you wish)
+1. The search widget
+2. The user profile widget
