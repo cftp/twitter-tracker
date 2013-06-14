@@ -75,9 +75,6 @@ class TT_Service {
 
 		// var_dump( $response );
 		// var_dump( $connection );
-		
-		
-
 
 		# @TODO switch the twitter oauth class over to wp http api:
 		if ( 200 == $connection->http_code ) {

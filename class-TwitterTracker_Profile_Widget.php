@@ -83,7 +83,7 @@ class TwitterTracker_Profile_Widget extends TwitterTracker_SW_Widget {
 
 		// Now show the input fields
 		$this->input_text( __( 'Title:', 'twitter-tracker' ), 'title', $title );
-		$this->input_text( __( 'Preamble:', 'twitter-tracker' ), 'preamble', $preamble );
+		$this->input_text( __( 'Preamble (HTML limited to <kbd>&lt;a&gt;</kbd>, <kbd>&lt;em&gt;</kbd>, <kbd>&lt;strong&gt;</kbd>, <kbd>&lt;p&gt;</kbd>, <kbd>&lt;br&gt;</kbd>):', 'twitter-tracker' ), 'preamble', $preamble );
 		$this->input_text( __( 'Username:', 'twitter-tracker' ), 'username', $username );
 		$this->input_conversational_mini_text( __( 'Max tweets to show:', 'twitter-tracker' ), 'max_tweets', $max_tweets );
 		$replies_note = __( 'When replies are hidden the widget will <em>attempt</em> to keep the number of tweets constant, however this may not be possible.', 'twitter-tracker' );
