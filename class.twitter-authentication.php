@@ -78,6 +78,10 @@ class TT_Twitter_Authentication {
 			return $creds;
 		return $this->creds;
 	}
+
+	public function is_authenticated() {
+		return $this->creds[ 'authenticated' ];
+	}
 	
 	public function admin_menu() {
 		add_options_page( 'Twitter Tracker Authentication', 'Twitter Tracker Auth', 'manage_options', 'tt_auth', array( $this, 'settings' ) );
@@ -184,7 +188,7 @@ class TT_Twitter_Authentication {
 	// =========
 	
 	public function settings() {
-
+		// var_dump( $this->creds );
 		if ( $this->creds[ 'authenticated' ] ) {
 			$vars = array();
 			$vars[ 'authenticated' ] = $this->creds[ 'authenticated' ];
@@ -315,15 +319,4 @@ class TT_Twitter_Authentication {
 	
 }
 
-/**
- * Hooks the WP admin_init action to load the Twitter authentication
- * module of Twitter Tracker.
- *
- * @return void
- **/
-function tt_authentication_plugins_loaded(  ) {
-	if ( is_admin() )
-		TT_Twitter_Authentication::init();
-}
-add_action( 'plugins_loaded', 'tt_authentication_plugins_loaded' );
-
+TT_Twitter_Authentication::init();

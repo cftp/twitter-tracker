@@ -31,6 +31,8 @@ These notes mainly for developers:
 
 `tt_allowed_html` filter – WARNING – incorrect use of this filter could make your website vulnerable to cross-site scripting attacks; if in doubt, do not use it. Amend the HTML elements and attributes allowed in the preamble and HTML after values. This filter passes a second param specifying the context the allowed HTML is for.
 
+'tt_cache_expiry' filter – The default cache for each widget is 300 seconds. Hook this filter to change this, but do not lower it too much on busy sites as you'll run out of API accesses and your site will be slower.
+
 == Translations ==
 
 * Dutch translation by Milo van der Linden of [De OpenGeoGroep](http://www.opengeogroep.nl/)
@@ -46,23 +48,34 @@ Development for [this plugin is hosted on Github](https://github.com/cftp/twitte
 
 == Installation ==
 
-The plugin is simple to install:
+**IMPORTANT:** You need to authorise with Twitter for this plugin to work. Follow the authorisatiuon steps below.
+
+=== Installation: ===
 
 1. Download `twitter-tracker.zip`
 1. Unzip
 1. Upload `twitter-tracker` directory to your `/wp-content/plugins` directory
 1. Go to the plugin management page and enable the plugin
+1. Now go through the authorisation steps below
+
+OR:
+
+1. From your admin area, choose "Plugins" then "Add New"
+1. Search for "Twitter Tracker"
+1. Select "Install Now"
 1. Give yourself a pat on the back
+1. Now go through the authorisation steps below
+
+=== Authorisation: ===
+
+1. Go to "Settings" > "Twitter Tracker Auth"
+1. Click on "Authorise with Twitter" and follow the prompts
 
 == Upgrade Notice ==
 
-= v3.2.1 =
+= v3.3 =
 
-Tweaked some HTML in the template to make it valid.
-
-= v3.2 =
-
-Added Slovak and Dutch translations, no other change.
+Fixes the plugin to work with Twitter's new API (and new constraints). After installing this update, you will be prompted to authorise with Twitter, just follow the prompts.
 
 == Change Log ==
 

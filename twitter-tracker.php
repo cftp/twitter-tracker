@@ -177,7 +177,19 @@ class TwitterTracker extends TwitterTracker_Plugin
 
 		// Let the user know if there's no search query
 		if ( empty( $twitter_search ) ) {
-			$this->render( 'widget-error', array() );
+			$vars = array( 
+				'msg' => __( 'For this Twitter Tracker search widget to work you need to set at least a Twitter Search in the widget settings.', 'twitter-tracker' ),
+			);
+			$this->render( 'widget-error', $vars );
+			return;
+		}
+
+		// Let the user know if there's no auth
+		if ( ! TT_Twitter_Authentication::init()->is_authenticated() ) {
+			$vars = array( 
+				'msg' => __( 'For this Twitter Tracker search widget to work you need to authorise with Twitter in "Dashboard" -> "Settings" -> "Twitter Tracker Auth".', 'twitter-tracker' ),
+			);
+			$this->render( 'widget-error', $vars );
 			return;
 		}
 
@@ -230,7 +242,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
 		echo $output;
 		$output = "<!-- Retrieved from $transient_key, cached at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
-		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
+		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300, $transient_key, $args ) );
 	}
 
 	public function show_profile( $instance = array() )
@@ -252,6 +264,24 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( is_singular() && $post_id = get_queried_object_id() )
 			if ( $local_username = trim( get_post_meta( $post_id, '_tt_username', true ) ) )
 				$username = $local_username;
+
+		// Let the user know if there's no search query
+		if ( empty( $username ) ) {
+			$vars = array( 
+				'msg' => __( 'For this Twitter Tracker profile widget to work you need to set at least a Twitter screenname (username) in the widget settings.', 'twitter-tracker' ),
+			);
+			$this->render( 'widget-error', $vars );
+			return;
+		}
+
+		// Let the user know if there's no auth
+		if ( ! TT_Twitter_Authentication::init()->is_authenticated() ) {
+			$vars = array( 
+				'msg' => __( 'For this Twitter Tracker profile widget to work you need to authorise with Twitter in "Dashboard" -> "Settings" -> "Twitter Tracker Auth".', 'twitter-tracker' ),
+			);
+			$this->render( 'widget-error', $vars );
+			return;
+		}
 
 		require_once( 'class.oauth.php' );
 		require_once( 'class.wp-twitter-oauth.php' );
@@ -299,7 +329,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
 		echo $output;
 		$output = "<!-- Retrieved from $transient_key, cached at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
-		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
+		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300, $transient_key, $username, $args ) );
 	}
 
 	public function & get()
