@@ -100,12 +100,12 @@ final class TT_Tweet {
 	/**
 	 * Set the Twitter ID
 	 *
-	 * @param string $id The Twitter tweet ID, as a string to prevent issues on 32 bit systems
+	 * @param string $id_str The Twitter tweet ID, as a string to prevent issues on 32 bit systems
 	 * @return void
 	 * @author simonwheatley
 	 **/
-	public function set_id( $id ) {
-		$this->id = $id;
+	public function set_id( $id_str ) {
+		$this->id = $this->sanitise_id_str( $id_str );
 	}
 
 	/**
@@ -287,5 +287,19 @@ final class TT_Tweet {
 		if ( $count == 0 || $count > 1 ) return $plural;
 		return $singular;
 	}
+
+	/**
+	 * We cannot sanitise some ID strings by converting to integers, as 
+	 * they will overflow 32 bit systems and corrupt data. This method
+	 * sanitises without converting to ints.
+	 * 
+	 * @param string $id_str An integer ID represented as a string to be sanitised
+	 * @return string A sanitised integer ID 
+	 */
+	public function sanitise_id_str( $id_str ) {
+		$id_str = preg_replace( '/[^\d]/', '', (string) $id_str );
+		return $id_str;
+	}
+
 
 }
