@@ -312,5 +312,14 @@ class TT_Twitter_Authentication {
 	
 }
 
-TT_Twitter_Authentication::init();
+/**
+ * Hooks the WP admin_init action to load the Twitter authentication
+ * module of Twitter Tracker.
+ *
+ * @return void
+ **/
+function tt_authentication_admin_init(  ) {
+	TT_Twitter_Authentication::init();
+}
+add_action( 'admin_init', 'tt_authentication_admin_init' );
 
