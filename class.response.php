@@ -42,28 +42,6 @@ final class TT_Response {
 		$this->items[] = $item;
 	}
 
-	// public function output() {
-
-	// 	if ( empty( $this->items ) )
-	// 		return false;
-
-	// 	if ( is_null( $this->meta['count'] ) )
-	// 		$this->meta['count'] = count( $this->items );
-	// 	if ( is_null( $this->meta['min_id'] ) )
-	// 		$this->meta['min_id'] = reset( $this->items )->id;
-
-	// 	$output = array(
-	// 		'meta'  => $this->meta,
-	// 		'items' => array()
-	// 	);
-
-	// 	foreach ( $this->items as $item )
-	// 		$output['items'][] = $item->output();
-
-	// 	return $output;
-
-	// }
-
 	public function remove_retweets() {
 		foreach ( $this->items as $i => & $item )
 			if ( $item->retweeted )
@@ -75,6 +53,19 @@ final class TT_Response {
 		foreach ( $this->items as $i => & $item )
 			if ( ! is_null( $item->in_reply_to_status_id_str ) )
 				unset( $this->items[ $i ] );
+		$this->items = array_values( $this->items );
+	}
+
+	public function remove_without_hash( $hashtag ) {
+		$hashtag = strtolower( $hashtag );
+		error_log( "SW: Hash " . print_r( $hashtag , true ) );
+		
+		foreach ( $this->items as $i => & $item ) {
+			// Case insensitive in_array search, pls
+			error_log( "SW: Check in  " . implode( ', ', array_map( 'strtolower', $item->hashtags ) ) );
+			if ( ! in_array( $hashtag, array_map( 'strtolower', $item->hashtags ) ) )
+				unset( $this->items[ $i ] );
+		}
 		$this->items = array_values( $this->items );
 	}
 
@@ -96,6 +87,7 @@ final class TT_Tweet {
 	public $retweeted; // Bool, was this a retweet
 	public $original_twit; // Twitter screen name of the original twit who has been retweeted, e.g. "simonwheatley"
 	public $in_reply_to_status_id_str; // The Twitter status ID this is in response to, as string
+	public $hashtags; // An array of hashtags as strings
 
 	/**
 	 * Set the Twitter ID
@@ -210,12 +202,16 @@ final class TT_Tweet {
 	/**
 	 * Set the Twitter ID of the status this tweet is in response to
 	 *
-	 * @param string $id The Twitter tweet ID, as a string to prevent issues on 32 bit systems
+	 * @param string $id_str The Twitter tweet ID, as a string to prevent issues on 32 bit systems
 	 * @return void
 	 * @author simonwheatley
 	 **/
-	public function set_reply_to( $in_reply_to_status_id_str ) {
-		$this->in_reply_to_status_id_str = $in_reply_to_status_id_str;
+	public function set_reply_to( $id_str ) {
+		$this->in_reply_to_status_id_str = $this->sanitise_id_str( $id_str );
+	}
+
+	public function set_hashtags( $hashtags ) {
+		$this->hashtags = $hashtags;
 	}
 
 	/**
@@ -297,6 +293,8 @@ final class TT_Tweet {
 	 * @return string A sanitised integer ID 
 	 */
 	public function sanitise_id_str( $id_str ) {
+		if ( is_null( $id_str ) )
+			return $id_str;
 		$id_str = preg_replace( '/[^\d]/', '', (string) $id_str );
 		return $id_str;
 	}

@@ -33,43 +33,11 @@ class TT_Service {
 		if ( is_wp_error( $connection = $this->get_connection() ) )
 			return $connection;
 
-		# +exclude:retweets
-
-		# operators: https://dev.twitter.com/docs/using-search
-
-		$params = $request['params'];
-
-		$q = array();
-
-		if ( isset( $params['q'] ) )
-			$q[] = trim( $params['q'] );
-
-		if ( isset( $params['hashtag'] ) )
-			$q[] = sprintf( '#%s', ltrim( $params['hashtag'], '#' ) );
-
-		if ( isset( $params['by_user'] ) )
-			$q[] = sprintf( 'from:%s', ltrim( $params['by_user'], '@' ) );
-
-		if ( isset( $params['to_user'] ) )
-			$q[] = sprintf( '@%s', ltrim( $params['to_user'], '@' ) );
-
-		$args = array(
-			'q'           => implode( ' ', $q ),
-			'result_type' => 'recent',
-			'count'       => 20,
-		);
-
-		if ( isset( $params['location'] ) and isset( $params['radius'] ) )
-			$args['geocode'] = sprintf( '%s,%dkm', $params['location'], $params['radius'] );
-
-		if ( !empty( $request['min_id'] ) )
-			$args['since_id'] = $request['min_id'];
-		else if ( !empty( $request['max_id'] ) )
-			$args['max_id'] = $request['max_id'];
+		$args = $request['params'];
+		$args[ 'result_type' ] = 'recent';
 
 		$response = $connection->get( sprintf( '%s/search/tweets.json', untrailingslashit( $connection->host ) ), $args );
 
-		# @TODO switch the twitter oauth class over to wp http api:
 		if ( 200 == $connection->http_code ) {
 
 			return $this->search_response( $response );
@@ -170,6 +138,10 @@ class TT_Service {
 		return $status->retweeted_status->user->screen_name;
 	}
 
+	public function status_hashtags( $status ) {
+		return wp_list_pluck( $status->entities->hashtags, 'text' );
+	}
+
 	public function get_max_id( $next ) {
 
 		parse_str( ltrim( $next, '?' ), $vars );
@@ -188,9 +160,6 @@ class TT_Service {
 
 		$response = new TT_Response;
 
-		# @TODO $r->search_metadata->next_results isn't always set, causes notice
-		$response->add_meta( 'max_id', self::get_max_id( $r->search_metadata->next_results ) );
-
 		$this->response_statuses( $response, $r->statuses );
 
 		return $response;
@@ -203,9 +172,6 @@ class TT_Service {
 			return false;
 
 		$response = new TT_Response;
-
-		// $response->add_meta( 'max_id', self::get_max_id( $r->search_metadata->next_results ) );
-
 		$this->response_statuses( $response, $statuses );
 
 		return $response;
@@ -228,6 +194,7 @@ class TT_Service {
 			$item->set_retweeted( self::status_retweeted( $status ) );
 			$item->set_original_twit( self::status_original_twit( $status ) );
 			$item->set_reply_to( $status->in_reply_to_status_id_str );
+			$item->set_hashtags( self::status_hashtags( $status ) );
 
 			$response->add_item( $item );
 

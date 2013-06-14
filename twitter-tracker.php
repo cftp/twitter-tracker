@@ -150,8 +150,13 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( ! defined( 'MAGPIE_CACHE_AGE' ) )
 			define( 'MAGPIE_CACHE_AGE', 60 * 15 ); // Fifteen of your Earth minutes
 	}
-	
-	public function show( $instance )
+		
+	public function show( $instance = array() ) {
+		// Backwards compatibility
+		return $this->show_search( $instance );
+	}
+
+	public function show_search( $instance = array() )
 	{
 		$defaults = array (
 			'hide_replies' => false,
@@ -179,11 +184,11 @@ class TwitterTracker extends TwitterTracker_Plugin
 		require_once( 'class.oauth.php' );
 		require_once( 'class.wp-twitter-oauth.php' );
 		require_once( 'class.response.php' );
-		require_once( 'service.php' );
+		require_once( 'class.twitter-service.php' );
 
 		$args = array(
 			'params' => array(
-				'count' => max( ($max_tweets * 2), 200 ), // Get *lots* as we have to throw some away later
+				'count' => max( ($max_tweets * 4), 200 ), // Get *lots* as we have to throw some away later
 				'q'     => $twitter_search,
 			),
 		);
@@ -204,6 +209,13 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( ! $include_retweets )
 			$response->remove_retweets();
 
+		$mandatory_hash = strtolower( trim( ltrim( $mandatory_hash, '#' ) ) );
+		if ( $mandatory_hash ) {
+			error_log( "SW: Hash " . print_r( $mandatory_hash , true ) );
+			
+			$response->remove_without_hash( $mandatory_hash );
+		}
+
 		$vars = array( 
 			'tweets' => array_slice( $response->items, 0, $max_tweets ),
 			'preamble' => $preamble,
@@ -213,7 +225,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$this->render( 'widget-contents', $vars );
 
 	}
-	
+
 	public function show_profile( $instance = array() )
 	{
 		$defaults = array (
@@ -237,10 +249,10 @@ class TwitterTracker extends TwitterTracker_Plugin
 		require_once( 'class.oauth.php' );
 		require_once( 'class.wp-twitter-oauth.php' );
 		require_once( 'class.response.php' );
-		require_once( 'service.php' );
+		require_once( 'class.twitter-service.php' );
 
 		$args = array(
-			'count' => max( ($max_tweets * 2), 200 ), // Get *lots* as we have to throw some away later
+			'count' => max( ($max_tweets * 4), 200 ), // Get *lots* as we have to throw some away later
 		);
 
 		$service = new TT_Service;
@@ -256,7 +268,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( $hide_replies )
 			$response->remove_replies();
 
-		// if ( ! $include_retweets )
+		if ( ! $include_retweets )
 			$response->remove_retweets();
 
 		$vars = array( 
@@ -285,7 +297,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 function twitter_tracker( $instance )
 {
 	$tracker = TwitterTracker::get();
-	$tracker->show( $instance );
+	$tracker->show_search( $instance );
 }
 
 function twitter_tracker_profile( $instance )
