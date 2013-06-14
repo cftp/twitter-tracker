@@ -170,9 +170,9 @@ class TT_Twitter_Authentication {
 
 	public function admin_notices() {
 		if ( isset( $_GET[ 'tt_authenticated' ] ) )
-			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'Thank you for authenticating <strong>@%s</strong> with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have authorised Twitter Tracker to access Twitter using the <strong>@%s</strong> account', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 		if ( isset( $_GET[ 'tt_unauthenticated' ] ) )
-			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have remove the authorisation with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( "You have remove Twitter Tracker's authorisation with Twitter", 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 		if ( isset( $_GET[ 'tt_denied' ] ) )
 			printf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Authorisation with Twitter was <strong>not</strong> completed.', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 	}	
