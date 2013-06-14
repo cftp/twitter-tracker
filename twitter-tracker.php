@@ -193,6 +193,13 @@ class TwitterTracker extends TwitterTracker_Plugin
 			),
 		);
 
+		$transient_key = 'tt_profile-' . md5( serialize( $args ) );
+
+		if ( $output = get_transient( $transient_key ) ) {
+			echo $output;
+			return;
+		}
+
 		$service = new TT_Service;
 		$response = $service->request_search( $args );
 
@@ -219,8 +226,11 @@ class TwitterTracker extends TwitterTracker_Plugin
 			'html_after' => $html_after,
 		);
 		$vars[ 'datef' ] = _x( 'M j, Y @ G:i', 'Publish box date format', 'twitter-tracker' );
-		$this->render( 'widget-contents', $vars );
-
+		$output = $this->capture( 'widget-contents', $vars );
+		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
+		echo $output;
+		$output = "<!-- Cached as $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
+		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
 	}
 
 	public function show_profile( $instance = array() )
@@ -252,10 +262,15 @@ class TwitterTracker extends TwitterTracker_Plugin
 			'count' => max( ($max_tweets * 4), 200 ), // Get *lots* as we have to throw some away later
 		);
 
+		$transient_key = 'tt_search-' . md5( $username . serialize( $args ) );
+
+		if ( $output = get_transient( $transient_key ) ) {
+			echo $output;
+			return;
+		}
+
 		$service = new TT_Service;
 		$response = $service->request_user_timeline( $username, $args );
-
-		// @TODO Caching!
 
 		if ( is_wp_error( $response ) ) {
 			error_log( "Twitter Tracker response error: " . print_r( $response, true ) );
@@ -280,7 +295,11 @@ class TwitterTracker extends TwitterTracker_Plugin
 			'html_after' => $html_after,
 		);
 		$vars[ 'datef' ] = _x( 'M j, Y @ G:i', 'Publish box date format', 'twitter-tracker' );
-		$this->render( 'widget-contents', $vars );
+		$output = $this->capture( 'widget-contents', $vars );
+		echo "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->";
+		echo $output;
+		$output = "<!-- Cached as $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
+		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300 ) );
 	}
 
 	public function & get()
