@@ -169,10 +169,13 @@ class TT_Twitter_Authentication {
 	}
 
 	public function admin_notices() {
+		$screen = get_current_screen();
+		if ( 'settings_page_tt_auth' != $screen->id && current_user_can( 'manage_options' ) && ! $this->creds[ 'authenticated' ] )
+			printf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Before you can use Twitter Tracker, you need to <a href="%s">authorise this site with Twitter</a>.', 'twitter-tracker' ), admin_url( 'options-general.php?page=tt_auth' ) ) );
 		if ( isset( $_GET[ 'tt_authenticated' ] ) )
 			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have authorised Twitter Tracker to access Twitter using the <strong>@%s</strong> account', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 		if ( isset( $_GET[ 'tt_unauthenticated' ] ) )
-			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( "You have remove Twitter Tracker's authorisation with Twitter", 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( "You have removed Twitter Tracker's authorisation with Twitter", 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 		if ( isset( $_GET[ 'tt_denied' ] ) )
 			printf( '<div class="error"><p>%s</p></div>', sprintf( __( 'Authorisation with Twitter was <strong>not</strong> completed.', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 	}	
