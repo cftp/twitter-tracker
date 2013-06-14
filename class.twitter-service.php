@@ -139,6 +139,12 @@ class TT_Service {
 		return wp_list_pluck( $status->entities->hashtags, 'text' );
 	}
 
+	public function status_avatar( $status ) {
+		if ( self::status_retweeted( $status ) )
+			return is_ssl() ? $status->retweeted_status->user->profile_image_url_https : $status->retweeted_status->user->profile_image_url;
+		return is_ssl() ? $status->user->profile_image_url_https : $status->user->profile_image_url;
+	}
+
 	public function get_max_id( $next ) {
 
 		parse_str( ltrim( $next, '?' ), $vars );
@@ -185,7 +191,7 @@ class TT_Service {
 			$item->set_id( $status->id_str );
 			$item->set_link( self::status_url( $status ) );
 			$item->set_content( self::status_content( $status ) );
-			$item->set_thumbnail( is_ssl() ? $status->user->profile_image_url_https : $status->user->profile_image_url );
+			$item->set_thumbnail( self::status_avatar( $status ) );
 			$item->set_timestamp( strtotime( $status->created_at ) );
 			$item->set_twit( $status->user->screen_name );
 			$item->set_twit_name( $status->user->name );
