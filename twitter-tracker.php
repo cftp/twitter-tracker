@@ -237,6 +237,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 			'preamble' => $preamble,
 			'html_after' => $html_after,
 		);
+		
 		$vars[ 'datef' ] = _x( 'M j, Y @ G:i', 'Publish box date format', 'twitter-tracker' );
 		$output = $this->capture( 'widget-contents', $vars );
 		echo PHP_EOL . "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL;
@@ -307,10 +308,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 			return;
 		}
 
-		if ( $hide_replies ) {
-			error_log( "SW: Hide replies " );
+		if ( $hide_replies )
 			$response->remove_replies();
-		}
 
 		if ( ! $include_retweets )
 			$response->remove_retweets();
