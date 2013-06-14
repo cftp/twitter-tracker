@@ -318,8 +318,9 @@ class TT_Twitter_Authentication {
  *
  * @return void
  **/
-function tt_authentication_admin_init(  ) {
-	TT_Twitter_Authentication::init();
+function tt_authentication_plugins_loaded(  ) {
+	if ( is_admin() )
+		TT_Twitter_Authentication::init();
 }
-add_action( 'admin_init', 'tt_authentication_admin_init' );
+add_action( 'plugins_loaded', 'tt_authentication_plugins_loaded' );
 
