@@ -98,6 +98,8 @@ class TT_Twitter_Authentication {
 	public function admin_notices() {
 		if ( isset( $_GET[ 'tt_authenticated' ] ) )
 			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'Thank you for authenticating <strong>@%s</strong> with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
+		if ( isset( $_GET[ 'tt_unauthenticated' ] ) )
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'You have remove the authorisation with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 	}	
 
 	public function load_settings() {
@@ -113,6 +115,10 @@ class TT_Twitter_Authentication {
 				'authenticated',
 			);
 			$this->unset_creds( $unset_creds );
+
+			nocache_headers();
+			wp_redirect( admin_url( 'options-general.php?page=tt_auth&tt_unauthenticated=1' ) );
+			exit;			
 		}
 		
 		// Authentication request:
