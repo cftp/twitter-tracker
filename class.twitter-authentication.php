@@ -19,12 +19,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 /**
- * Twitter oAuth Authentication Dance Controller
+ * Twitter oAuth Authentication Line Dance Caller
  *
  * @package Twitter Tracker
  * @since 3.3
  */
-class TT_Twitter_Authentication extends TwitterTracker_Plugin {
+class TT_Twitter_Authentication {
 	
 	/**
 	 * An array of error messages for the user
@@ -43,6 +43,7 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 	 * @return NAO_Duplicates_Checker
 	 */
 	static public function init() {
+
 		static $instance = false;
 
 		if ( ! $instance )
@@ -59,11 +60,11 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 	 **/
 	public function __construct() {
 
-		$this->add_action( 'admin_init' );
-		$this->add_action( 'admin_menu' );
-		$this->add_action( 'load-settings_page_tt_auth', 'load_settings' );
-		$this->add_action( 'admin_notices' );
-		$this->add_filter( 'tt_twitter_credentials' );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'load-settings_page_tt_auth', array( $this, 'load_settings' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+		add_filter( 'tt_twitter_credentials', array( $this, 'tt_twitter_credentials' ) );
 
 		$this->errors = array();
 
@@ -95,30 +96,15 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 	}
 
 	public function admin_notices() {
-		if ( ! $this->errors )
-			return;
-		foreach ( $this->errors as & $error_msg )
-			printf( '<div class="error"><p>%s</p></div>', $error_msg );
+		if ( isset( $_GET[ 'tt_authenticated' ] ) )
+			printf( '<div class="updated"><p>%s</p></div>', sprintf( __( 'Thank you for authenticating <strong>@%s</strong> with Twitter', 'twitter-tracker' ), $this->creds[ 'screen_name' ] ) );
 	}	
 
 	public function load_settings() {
-		// wp_enqueue_style( 'twtwchr-admin', $this->url( '/css/admin.css' ), array(), $this->version );
-		
-		if ( isset( $_POST[ '_cftp_twtwchr_nonce_field' ] ) )
-			check_admin_referer ( 'twtwchr_user_change', '_cftp_twtwchr_nonce_field' );
 
-		require_once( 'class.oauth.php' );
-		require_once( 'class.wp-twitter-oauth.php' );
-		var_dump( $this->creds ); exit;
-		
-		$connection = new WP_Twitter_OAuth( 
-			$this->creds[ 'consumer_key' ], 
-			$this->creds[ 'consumer_secret' ],
-			$this->creds[ 'oauth_token' ],
-			$this->creds[ 'oauth_token_secret' ]
-		);
-
-		if ( isset( $_GET[ 'tt_unauthenticate' ] ) ) {
+		// Un-authentication request:
+		if ( isset( $_POST[ 'tt_unauthenticate' ] ) ) {
+			check_admin_referer ( "tt_unauthenticate_{$this->creds[ 'user_id' ]}", '_tt_unauth_nonce_field' );
 			$unset_creds = array(
 				'oauth_token',
 				'oauth_token_secret',
@@ -128,8 +114,14 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 			);
 			$this->unset_creds( $unset_creds );
 		}
+		
+		// Authentication request:
+		if ( ! $this->creds[ 'authenticated' ] && isset( $_POST[ 'tt_authenticate' ] ) ) {
+		
+			if ( isset( $_POST[ '_cftp_tt_nonce_field' ] ) )
+				check_admin_referer ( 'tt_authenticate', '_tt_auth_nonce_field' );
 
-		if ( isset( $_GET[ 'tt_authenticate' ] ) ) {
+			$connection = $this->oauth_connection();
 			$request_token_response = $connection->getRequestToken( admin_url( 'options-general.php?page=tt_auth' ) );
 			
 			$new_creds = array(
@@ -142,9 +134,11 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 			$authorize_url = $connection->getAuthorizeURL( $this->creds[ 'oauth_token' ] );
 			wp_redirect( $authorize_url );
 			exit;
-
-		} else if ( $this->is_authentication_response() ) {
-
+		}
+		
+		// Partway through the authentication:
+		if ( ! $this->creds[ 'authenticated' ] && $this->is_authentication_response() ) {
+			$connection = $this->oauth_connection();
 			$params = array(
 				'oauth_token' => $this->creds[ 'oauth_token' ],
 			);
@@ -162,14 +156,12 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 			$this->set_creds( $new_creds );
 
 			nocache_headers();
-			wp_redirect( admin_url( 'options-general.php?page=tt_auth&tt_authenticed=1' ) );
+			wp_redirect( admin_url( 'options-general.php?page=tt_auth&tt_authenticated=1' ) );
 			exit;			
-
 		}
 
-		var_dump( $this->creds );
+		// No authentication process in progress
 
-		exit;
 	}
 	
 	public function queue_new_mentions() {
@@ -226,29 +218,101 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 	
 	public function settings() {
 
-		return;
 
-		$vars = array();
-		if ( isset( $_GET[ 'twtwchr_unauthenticate' ] ) ) {
-			$user_id_str = absint( $_GET[ 'user_id' ] );
-			$vars[ 'unauthenticate_user_id' ] = $_GET[ 'twtwchr_unauthenticate' ];
-			$vars[ 'user_id' ] = $user_id_str;
-			$vars[ 'user' ] = $this->oauth->get_user( $user_id_str );
-			$this->render_admin( 'confirm-unauthenticate.php', $vars );
+		var_dump( $this->creds );
+		if ( $this->creds[ 'authenticated' ] ) {
+			$vars = array();
+			$vars[ 'authenticated' ] = $this->creds[ 'authenticated' ];
+			$vars[ 'user_id' ]       = $this->creds[ 'user_id' ];
+			$vars[ 'screen_name' ]   = $this->creds[ 'screen_name' ];
+			$this->view_unauthenticate( $vars );
 		} else {
-			$vars[ 'users' ] = $this->oauth->get_users();
-			foreach ( $vars[ 'users' ] as $user_id => & $user ) {
-				$unauth_args = array( 'twtwchr_unauthenticate' => 1, 'user_id' => $user_id );
-				$unauth_url = add_query_arg( $unauth_args );
-				$user[ 'unauth_url' ] = $unauth_url;
-			}
-			$vars[ 'auth_url' ] = wp_nonce_url( add_query_arg( array( 'twtwchr_authenticate' => 1 ) ), 'twtwchr_auth' );
-			$this->render_admin( 'settings.php', $vars );
+			$this->view_authenticate( array() );
 		}
+
+	}
+
+	// "VIEWS"
+	// =======
+
+	public function view_unauthenticate( $vars ) {
+		var_dump( $vars );
+		
+		extract( $vars );
+?>
+
+<div class="wrap">
+	
+	<?php screen_icon(); ?>
+	<h2 class="title">Twitter Tracker</h2>
+
+	<p><?php _e( 'Note that the restrictions registered for this plugin with Twitter mean that it can only read your tweets and mentions, and see your followers, it cannot tweet on your behalf or see DMs.', 'twitter-tracker' ); ?></p>
+		
+	<?php if ( $authenticated ) : ?>
+	
+		<form action="" method="post">
+			<?php wp_nonce_field( "tt_unauthenticate_$user_id", '_tt_unauth_nonce_field' ); ?>
+
+			<p>
+				<?php 
+					printf( 
+						__( 'You are currently accessing Twitter as the following user: %s', 'twitter-tracker' ), 
+						'<a href="http://twitter.com/<?php echo esc_attr( $screen_name ); ?>">@' . esc_html( $screen_name ) . '</a> ' . get_submit_button( __( 'Remove Authentication', 'twitter-tracker' ), 'delete', 'tt_unauthenticate', false )
+					);
+				?> 
+			</p>
+
+		</form>
+	
+	<?php endif; ?>
+	
+</div>
+
+<?php
+	}
+
+	public function view_authenticate( $vars ) {
+		extract( $vars );
+?>
+
+<div class="wrap">
+	
+	<?php screen_icon(); ?>
+	<h2 class="title"><?php _e( 'Twitter Tracker', 'twitter-tracker' ); ?></h2>
+	
+	<p><?php _e( 'Note that the restrictions registered for this plugin with Twitter mean that it can only read your tweets and mentions, and see your followers, it cannot tweet on your behalf or see DMs.', 'twitter-tracker' ); ?></p>
+
+	<form action="" method="post">
+		<?php wp_nonce_field( 'tt_authenticate', '_tt_auth_nonce_field' ); ?>
+		<p>
+			<?php 
+				printf( 
+					__( 'In order to read and display Twitter searches and user tweets, we need you to authorise Twitter Tracker with Twitter: %s', 'twitter-tracker' ),
+					get_submit_button( __( 'Authorise with Twitter', 'twitter-tracker' ), null, 'tt_authenticate', false )
+				); ?>
+		</p>
+
+	</form>
+	
+</div>
+
+
+<?php
 	}
 
 	// UTILITIES
 	// =========
+
+	public function oauth_connection() {
+		require_once( 'class.oauth.php' );
+		require_once( 'class.wp-twitter-oauth.php' );
+		return new WP_Twitter_OAuth( 
+			$this->creds[ 'consumer_key' ], 
+			$this->creds[ 'consumer_secret' ],
+			$this->creds[ 'oauth_token' ],
+			$this->creds[ 'oauth_token_secret' ]
+		);
+	}
 
 	public function load_creds() {
 		$creds_defaults = array(
@@ -257,6 +321,8 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 			'oauth_token'        => null,
 			'oauth_token_secret' => null,
 			'authenticated'      => false,
+			'user_id'            => null,
+			'screen_name'        => null,
 		);
 		$creds_option = get_option( 'tt_twitter_creds', array() );
 		$this->creds = wp_parse_args( $creds_option, $creds_defaults );
@@ -445,5 +511,5 @@ class TT_Twitter_Authentication extends TwitterTracker_Plugin {
 	
 }
 
-$GLOBALS[ 'tt_twitter_authentication' ] = new TT_Twitter_Authentication;
+TT_Twitter_Authentication::init();
 

@@ -230,8 +230,6 @@ class TT_Service {
 			$item->set_reply_to( $status->in_reply_to_status_id_str );
 
 			$response->add_item( $item );
-			error_log( "SW: Item " . print_r( $item , true ) );
-			
 
 		}
 		return $response;
