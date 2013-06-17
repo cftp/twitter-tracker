@@ -8,7 +8,7 @@
 		Twitter Tracker widget query: <br />
 		<input class="large-text" type="text" name="tt_query" value="<?php echo esc_attr( $query ); ?>" id="tt_query" />
 	</label><br />
-	<small><?php _e( 'This term will override, for this page or post only, any value you have entered into the widget. Enter any search term that works on <a href="http://search.twitter.com/" target="_blank">Twitter Search</a>, here&apos;s some <a href="http://search.twitter.com/operators" target="_blank">help with the syntax</a>.', 'twitter-tracker' ) ?></small>
+	<small><?php _e( 'This term will override, for this page or post only, any value you have entered into the widget. Enter any search term that works on <a href="http://twitter.com/" target="_blank">Twitter Search</a>, here&apos;s some <a href="http://twitter.com/operators" target="_blank">help with the syntax</a>.', 'twitter-tracker' ) ?></small>
 </p>
 
 <p class="tt_username">

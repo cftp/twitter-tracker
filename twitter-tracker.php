@@ -8,7 +8,7 @@ Version: 3.3
 Author URI: http://codeforthepeople.com/
 */
 
-// http://search.twitter.com/search.atom?q=wordcampuk
+// http://twitter.com/search.atom?q=wordcampuk
 
 /*  Copyright 2008 Simon Wheatley
 

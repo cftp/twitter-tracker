@@ -9,7 +9,7 @@ Track Twitter search results, a Twitter hashtag, or a Twitter profile using side
 
 == Description ==
 
-A widget, Twitter Search Tracker, which allows you to specify and display a [Twitter search](http://search.twitter.com/) (or a Twitter hashtag) in your sidebar. Twitter searches are [very flexible](http://search.twitter.com/operators), and you can display anything from Hashtags to individual, or aggregated Twitter streams.
+A widget, Twitter Search Tracker, which allows you to specify and display a [Twitter search](http://twitter.com/) (or a Twitter hashtag) in your sidebar. Twitter searches are [very flexible](http://twitter.com/operators), and you can display anything from Hashtags to individual, or aggregated Twitter streams.
 
 Another widget, Twitter Profile Tracker, allows you to show the tweets from a specific user in your sidebar.
 

@@ -96,7 +96,7 @@ class TwitterTracker_Widget extends TwitterTracker_SW_Widget {
 		// Now show the input fields
 		$this->input_text( __( 'Title:', 'twitter-tracker' ), 'title', $title );
 		$this->input_text( __( 'Preamble (HTML limited to <kbd>&lt;a&gt;</kbd>, <kbd>&lt;em&gt;</kbd>, <kbd>&lt;strong&gt;</kbd>, <kbd>&lt;p&gt;</kbd>, <kbd>&lt;br&gt;</kbd>):', 'twitter-tracker' ), 'preamble', $preamble );
-		$search_note = __( 'Enter any search term that works on <a href="http://search.twitter.com/" target="_blank">Twitter Search</a>, here&apos;s some <a href="http://search.twitter.com/operators" target="_blank">help with the syntax</a>.', 'twitter-tracker' );
+		$search_note = __( 'Enter any search term that works on <a href="http://twitter.com/" target="_blank">Twitter Search</a>, here&apos;s some <a href="http://twitter.com/operators" target="_blank">help with the syntax</a>.', 'twitter-tracker' );
 		$this->input_text( __( 'Twitter search:', 'twitter-tracker' ), 'twitter_search', $twitter_search, $search_note );
 		$this->input_conversational_mini_text( __( 'Max tweets to show:', 'twitter-tracker' ), 'max_tweets', $max_tweets );
 		$replies_note = __( 'When replies are hidden the widget will <em>attempt</em> to keep the number of tweets constant, however this may not be possible.', 'twitter-tracker' );
