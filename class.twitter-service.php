@@ -114,12 +114,12 @@ class TT_Service {
 		// En-link-ify all the #hashtags in the message text
 		$hashtag_regex = '/(^|\s)#(\w*[a-zA-Z_]+\w*)/';
 		// preg_match_all( $hashtag_regex, $text, $preg_output );
-		$text = preg_replace( $hashtag_regex, '\1<a href="http://twitter.com/search?q=%23\2">#\2</a>', $text );
+		$text = preg_replace( $hashtag_regex, '\1<a href="http://twitter.com/search?q=%23\2" target="_blank">#\2</a>', $text );
 		
 		// En-link-ify all the @usernames in the message text
 		$username_regex = '/(^\.?|\s|)\@(\w*[a-zA-Z_]+\w*)/';
 		// preg_match_all( $username_regex, $text, $preg_output );
-		$text = preg_replace( $username_regex, '\1<a href="http://twitter.com/\2">@\2</a>', $text );
+		$text = preg_replace( $username_regex, '\1<a href="http://twitter.com/\2" target="_blank">@\2</a>', $text );
 
 		return $text;
 
