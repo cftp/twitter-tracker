@@ -77,11 +77,18 @@ OR:
 
 == Upgrade Notice ==
 
-= v3.3 =
+= v3.3.2 =
 
-Fixes the plugin to work with Twitter's new API (and new constraints). After installing this update, you will be prompted to authorise with Twitter, just follow the prompts.
+Fixes the plugin to work with Twitter's new API (and new constraints). After installing this update, you will be prompted to authorise with Twitter, just follow the prompts. Also adds an option to work with Emoji.
 
 == Change Log ==
+
+= v3.3.2 =
+
+Thursday 27 June 2013
+
+* Now uses Twitter's API v1.1 (requires someone to authenticate their account with Twitter)
+* Adds the ability to show or filter out Emoji
 
 = v3.2.1 =
 
