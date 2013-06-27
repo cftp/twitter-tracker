@@ -176,6 +176,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 				$twitter_search = $local_query;
 
 		// Let the user know if there's no search query
+		$twitter_search = trim( $twitter_search );
 		if ( empty( $twitter_search ) ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker search widget to work you need to set at least a Twitter Search in the widget settings.', 'twitter-tracker' ),
@@ -267,6 +268,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 				$username = $local_username;
 
 		// Let the user know if there's no search query
+		$username = trim( $username );
 		if ( empty( $username ) ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker profile widget to work you need to set at least a Twitter screenname (username) in the widget settings.', 'twitter-tracker' ),
