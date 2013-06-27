@@ -384,7 +384,21 @@ class TwitterTracker_Plugin
 		}
 		return $url;
 	}
+
+	/**
+	 * Get the filemtime for a path within this plugin
+	 *
+	 * @param string $path A path within this plugin directory
+	 * @return int The filemtime
+	 **/
 	
+	function filemtime( $path )
+	{
+		if ( ! file_exists( $this->plugin_base . "/$path" ) )
+			return null;
+		return filemtime( $this->plugin_base . "/$path" );
+	}
+
 	/**
 	 * Performs a version update check using an RSS feed.  The function ensures that the feed is only
 	 * hit once every given number of days, and the data is cached using the WordPress Magpie library

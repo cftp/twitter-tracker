@@ -65,6 +65,10 @@ class TwitterTracker_Profile_Widget extends TwitterTracker_SW_Widget {
 		$new_instance[ 'mandatory_hash' ] = strip_tags( $new_instance[ 'mandatory_hash' ] );
 		$new_instance[ 'html_after' ] = $this->maybe_wp_kses( $new_instance[ 'html_after' ], 'html_after' );
 		$new_instance[ 'class' ] = strip_tags( $new_instance[ 'class' ] );
+
+        $convert_emoji = 'hide' == $new_instance[ 'convert_emoji' ] ? 'hide' : 'convert';
+		update_option( 'tt_convert_emoji', $convert_emoji );
+
         return $new_instance;
     }
 
@@ -81,6 +85,8 @@ class TwitterTracker_Profile_Widget extends TwitterTracker_SW_Widget {
 		$html_after = isset( $html_after ) ? esc_attr( $html_after ) : '';
 		$class = isset( $class ) ? esc_attr( $class ) : '';
 
+        $convert_emoji = 'hide' == get_option( 'tt_convert_emoji', 'hide' ) ? 'hide' : 'convert';
+
 		// Now show the input fields
 		$this->input_text( __( 'Title:', 'twitter-tracker' ), 'title', $title );
 		$this->input_text( __( 'Preamble (HTML limited to <kbd>&lt;a&gt;</kbd>, <kbd>&lt;em&gt;</kbd>, <kbd>&lt;strong&gt;</kbd>, <kbd>&lt;p&gt;</kbd>, <kbd>&lt;br&gt;</kbd>):', 'twitter-tracker' ), 'preamble', $preamble );
@@ -89,6 +95,9 @@ class TwitterTracker_Profile_Widget extends TwitterTracker_SW_Widget {
 		$replies_note = __( 'When replies are hidden the widget will <em>attempt</em> to keep the number of tweets constant, however this may not be possible.', 'twitter-tracker' );
 		$this->input_checkbox( __( 'Hide @ replies:', 'twitter-tracker' ), 'hide_replies', $hide_replies, $replies_note );
 		$this->input_checkbox( __( 'Include retweets:', 'twitter-tracker' ), 'include_retweets', $include_retweets );
+		$options = array( 'hide' => __( 'Hide all Emoji', 'twitter-tracker' ), 'convert' => __( 'Show all Emoji as images', 'twitter-tracker' ) );
+		$emoji_note = sprintf( __( 'Showing Emoji is a setting which applies to <strong>all</strong> Twitter Tracker widgets in your site, it also involves downloading a 700kb image and a 40kb CSS file, which will increase page load times for your website. If you don’t know what Emoji are, this is <a href="%s" target="_blank">a good introduction</a>.', 'twitter-tracker' ), 'http://www.iamcal.com/emoji-in-web-apps/' );
+		$this->input_radios( __( 'Show or hide Emoji in ALL Twitter Tracker widgets?', 'twitter-tracker' ), 'convert_emoji', $options, $convert_emoji, $emoji_note, $no_selection = false );
 		$hashtag_note = __( 'Include the "#". Tweets without this #hashtag will not be shown.', 'twitter-tracker' );
 		$this->input_text( __( 'Mandatory hashtag:', 'twitter-tracker' ), 'mandatory_hash', $mandatory_hash, $hashtag_note );
 		$this->input_text( __( 'HTML to put after the results:', 'twitter-tracker' ), 'html_after', $html_after, __( 'Optional, use for things like a link to this Twitter search, etc.', 'twitter-tracker' ) );

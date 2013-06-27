@@ -26,6 +26,16 @@ Author URI: http://codeforthepeople.com/
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+	--------------------------------------------------------------------------
+
+	Emoji conversion library
+	https://github.com/iamcal/php-emoji/
+	By Cal Henderson cal@iamcal.com
+	Parser rewrite based on a fork by 杜志刚
+	This work is licensed under the GPL v3
+
+	Emoji images MIT licensed: https://github.com/github/gemoji/blob/master/LICENSE
+
 */
 
 require_once( dirname (__FILE__) . '/plugin.php' );
@@ -45,6 +55,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 
 	public function __construct()
 	{
+		$this->register_plugin( 'twitter-tracker', __FILE__ );
 		if ( is_admin() ) {
 			$this->register_activation (__FILE__);
 			$this->add_action( 'save_post', 'process_metabox', null, 2 );
@@ -53,6 +64,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		// Init
 		$this->register_plugin ( 'twitter-tracker', __FILE__ );
 		$this->add_action( 'init' );
+		$this->add_action( 'wp_enqueue_scripts', 'action_wp_enqueue_scripts' );
 		$this->add_filter( 'tt_allowed_post_types', 'warn_tt_allowed_post_types' );
 
 		// register widget
@@ -109,6 +121,19 @@ class TwitterTracker extends TwitterTracker_Plugin
 	}
 	
 	/**
+	 * Hooks the WP wp_enqueue_scripts action
+	 *
+	 * @action wp_enqueue_scripts
+	 *
+	 * @return void
+	 * @author Simon Wheatley
+	 **/
+	function action_wp_enqueue_scripts() {
+		if ( 'convert' == get_option( 'tt_convert_emoji', 'hide' ) )
+			wp_enqueue_style( 'tt_emoji', $this->url() .  '/emoji/emoji.css' , null, $this->filemtime( '/emoji/emoji.css' ) );
+	}
+
+	/**
 	 * Callback function providing the HTML for the metabox
 	 *
 	 * @return void
@@ -159,6 +184,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 	public function show_search( $instance = array() )
 	{
 		$defaults = array (
+			'convert_emoji' => 'hide',
 			'hide_replies' => false,
 			'include_retweets' => false,
 			'mandatory_hash' => '',
@@ -209,8 +235,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$transient_key = 'tt_profile-' . md5( serialize( $instance ) . serialize( $args ) );
 
 		if ( $output = get_transient( $transient_key ) ) {
-			echo $output;
-			return;
+			// echo $output;
+			// return;
 		}
 
 		$service = new TT_Service;
@@ -226,6 +252,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 
 		if ( ! $include_retweets )
 			$response->remove_retweets();
+
+		$response->convert_emoji( $convert_emoji );
 
 		$mandatory_hash = strtolower( trim( ltrim( $mandatory_hash, '#' ) ) );
 		if ( $mandatory_hash )
@@ -248,6 +276,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 	public function show_profile( $instance = array() )
 	{
 		$defaults = array (
+			'convert_emoji' => 'hide',
 			'hide_replies' => false,
 			'include_retweets' => false,
 			'mandatory_hash' => '',
@@ -296,8 +325,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$transient_key = 'tt_search-' . md5( serialize( $instance ) . $username . serialize( $args ) );
 
 		if ( $output = get_transient( $transient_key ) ) {
-			echo $output;
-			return;
+			// echo $output;
+			// return;
 		}
 
 		$service = new TT_Service;
@@ -313,6 +342,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 
 		if ( ! $include_retweets )
 			$response->remove_retweets();
+
+		$response->convert_emoji();
 
 		$mandatory_hash = strtolower( trim( ltrim( $mandatory_hash, '#' ) ) );
 		if ( $mandatory_hash )

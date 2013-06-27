@@ -67,6 +67,29 @@ class TwitterTracker_SW_Widget extends WP_Widget {
 		<?php
 	}
 
+	function input_radios( $label, $var, $options, $selected, $note = false )
+	{
+		?>
+		<p class="widget_inputs-<?php echo esc_attr( $var ); ?>">
+			<?php echo esc_html( $label ); ?><br />
+			<?php foreach ( $options as $i => $option ) : ?>
+				<label for="<?php echo $this->get_field_id( $var ); ?>_<?php echo esc_attr( $i ); ?>">
+					<input 
+					type="radio" 
+					name="<?php echo $this->get_field_name( $var ); ?>" 
+					id="<?php echo $this->get_field_id( $var ); ?>_<?php echo esc_attr( $i ); ?>" 
+					value="<?php echo esc_attr( $i ); ?>" 
+					<?php checked( $i, $selected ); ?>
+					/> <?php echo esc_html( $option ); ?>
+				</label><br />
+			<?php endforeach; ?>
+			<?php if ( $note ) : ?>
+				<br /><small><?php echo $note; ?></small>
+			<?php endif; ?>
+		</p>
+		<?php
+	}
+
 	function maybe_wp_kses( $value, $context ) {
 		if ( current_user_can( 'unfiltered_html' ) )
 			return $value;

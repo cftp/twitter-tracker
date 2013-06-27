@@ -67,6 +67,12 @@ final class TT_Response {
 		$this->items = array_values( $this->items );
 	}
 
+	public function convert_emoji() {
+		require_once( dirname( __FILE__ ) . '/emoji/emoji.php' );
+		foreach ( $this->items as $i => & $item )
+			$item->content = emoji_unified_to_html( $item->content );
+	}
+
 }
 
 final class TT_Tweet {
