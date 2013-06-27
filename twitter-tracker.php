@@ -216,8 +216,6 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$service = new TT_Service;
 		$response = $service->request_search( $args );
 
-		// @TODO Caching!
-
 		if ( is_wp_error( $response ) ) {
 			error_log( "Twitter Tracker response error: " . print_r( $response, true ) );
 			return;			
