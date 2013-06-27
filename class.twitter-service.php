@@ -283,10 +283,10 @@ class TT_Service {
 			}
 		}
 
-		if ( !class_exists( 'WP_Twitter_OAuth' ) )
+		if ( !class_exists( 'TT_Twitter_OAuth' ) )
 			require_once dirname( __FILE__ ) . '/class.wp-twitter-oauth.php';
 
-		$connection = new WP_Twitter_OAuth(
+		$connection = new TT_Twitter_OAuth(
 			$credentials['consumer_key'],
 			$credentials['consumer_secret'],
 			$credentials['oauth_token'],

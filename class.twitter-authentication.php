@@ -273,7 +273,7 @@ class TT_Twitter_Authentication {
 	public function oauth_connection() {
 		require_once( 'class.oauth.php' );
 		require_once( 'class.wp-twitter-oauth.php' );
-		return new WP_Twitter_OAuth( 
+		return new TT_Twitter_OAuth( 
 			$this->creds[ 'consumer_key' ], 
 			$this->creds[ 'consumer_secret' ],
 			$this->creds[ 'oauth_token' ],

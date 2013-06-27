@@ -10,7 +10,7 @@
 /**
  * Twitter OAuth class
  */
-class WP_Twitter_OAuth {
+class TT_Twitter_OAuth {
   /* Contains the last HTTP status code returned. */
   public $http_code;
   /* Contains the last API call. */
