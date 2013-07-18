@@ -365,6 +365,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( $mandatory_hash )
 			$response->remove_without_hash( $mandatory_hash );
 
+		// @TODO Setup a method for the default vars needed
 		$vars = array( 
 			'tweets' => array_slice( $response->items, 0, $max_tweets ),
 			'preamble' => $preamble,
