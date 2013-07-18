@@ -42,6 +42,10 @@ final class TT_Response {
 		$this->items[] = $item;
 	}
 
+	public function have_tweets() {
+		return ! empty( $this->items );
+	}
+
 	public function remove_retweets() {
 		foreach ( $this->items as $i => & $item )
 			if ( $item->retweeted )
