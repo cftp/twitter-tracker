@@ -248,12 +248,12 @@ class TwitterTracker extends TwitterTracker_Plugin
 
 		if ( is_wp_error( $response ) ) {
 			error_log( "Twitter Tracker response error: " . print_r( $response, true ) );
-			return;			
+			return;
 		}
 
 		if ( $hide_replies )
 			$response->remove_replies();
-
+		
 		if ( ! $include_retweets )
 			$response->remove_retweets();
 
