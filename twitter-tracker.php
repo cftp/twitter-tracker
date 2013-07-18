@@ -266,7 +266,15 @@ class TwitterTracker extends TwitterTracker_Plugin
 		);
 		
 		$vars[ 'datef' ] = _x( 'M j, Y @ G:i', 'Publish box date format', 'twitter-tracker' );
-		$output = $this->capture( 'widget-contents', $vars );
+
+		if ( ! $response->have_tweets() ) {
+			$vars[ 'msg' ] = apply_filters( 'tt_no_tweets', __( 'No tweets found.', 'twitter-tracker' ), $twitter_search, $instance );
+			$vars[ 'additional_error_class' ] = 'no-tweets';
+			$vars[ 'strong' ] = false;
+			$output = $this->capture( 'widget-error', $vars );
+		} else {
+			$output = $this->capture( 'widget-contents', $vars );
+		}
 		echo PHP_EOL . "<!-- Regenerating cache $transient_key at " . current_time( 'mysql' ) . " -->" . PHP_EOL;
 		echo $output;
 		$output = PHP_EOL . "<!-- Retrieved from $transient_key, cached at " . current_time( 'mysql' ) . " -->" . PHP_EOL . $output;
