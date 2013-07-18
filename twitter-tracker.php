@@ -206,6 +206,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( empty( $twitter_search ) ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker search widget to work you need to set at least a Twitter Search in the widget settings.', 'twitter-tracker' ),
+				'additional_error_class' => '',
+				'strong' => true,
 			);
 			$this->render( 'widget-error', $vars );
 			return;
@@ -215,6 +217,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( ! TT_Twitter_Authentication::init()->is_authenticated() ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker search widget to work you need to authorise with Twitter in "Dashboard" -> "Settings" -> "Twitter Tracker Auth".', 'twitter-tracker' ),
+				'additional_error_class' => '',
+				'strong' => true,
 			);
 			$this->render( 'widget-error', $vars );
 			return;
@@ -307,6 +311,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( empty( $username ) ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker profile widget to work you need to set at least a Twitter screenname (username) in the widget settings.', 'twitter-tracker' ),
+				'additional_error_class' => '',
+				'strong' => true,
 			);
 			$this->render( 'widget-error', $vars );
 			return;
@@ -316,6 +322,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		if ( ! TT_Twitter_Authentication::init()->is_authenticated() ) {
 			$vars = array( 
 				'msg' => __( 'For this Twitter Tracker profile widget to work you need to authorise with Twitter in "Dashboard" -> "Settings" -> "Twitter Tracker Auth".', 'twitter-tracker' ),
+				'additional_error_class' => '',
+				'strong' => true,
 			);
 			$this->render( 'widget-error', $vars );
 			return;
