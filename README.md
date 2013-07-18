@@ -90,9 +90,9 @@ Fixes the plugin to work with Twitter's new API (and new constraints). After ins
 
 Thursday 18 July 2013
 
-* Fix name clash by renaming a class (hopefully the last one)
-* Show message in search widget when no tweets are found
-* Add filter to tailor "no tweets" message
+* BUGFIX: Fix name clash by renaming a class (hopefully the last one)
+* ENHANCEMENT: Show message in search widget when no tweets are found
+* ENHANCEMENT: Add `tt_no_tweets` filter to tailor "no tweets" message
 
 ### v3.3.3 
 
