@@ -10,7 +10,24 @@ Author URI: http://codeforthepeople.com/
 
 // http://twitter.com/search.atom?q=wordcampuk
 
-/*  Copyright 2008 Simon Wheatley
+/*  Copyright 2013 Code For The People
+
+				_____________
+			   /      ____   \
+		 _____/       \   \   \
+		/\    \        \___\   \
+	   /  \    \                \
+	  /   /    /          _______\
+	 /   /    /          \       /
+	/   /    /            \     /
+	\   \    \ _____    ___\   /
+	 \   \    /\    \  /       \
+	  \   \  /  \____\/    _____\
+	   \   \/        /    /    / \
+		\           /____/    /___\
+		 \                        /
+		  \______________________/
+
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
