@@ -80,11 +80,21 @@ OR:
 
 == Upgrade Notice ==
 
+= v3.3.6 =
+
+Fixes a bug to restore caching of requests to the Twitter API.
+
 = v3.3.5 =
 
 Fixes the plugin to work with Twitter's new API (and new constraints). After installing this update, you will be prompted to authorise with Twitter, just follow the prompts. Also adds an option to work with Emoji.
 
 == Change Log ==
+
+= v3.3.5 =
+
+Tuesday 13 August 2013
+
+* BUGFIX: Restore caching of requests to Twitter API
 
 = v3.3.5 =
 
