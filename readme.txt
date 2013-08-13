@@ -90,7 +90,7 @@ Fixes the plugin to work with Twitter's new API (and new constraints). After ins
 
 == Change Log ==
 
-= v3.3.5 =
+= v3.3.6 =
 
 Tuesday 13 August 2013
 
