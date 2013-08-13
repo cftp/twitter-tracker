@@ -3,7 +3,7 @@ Contributors: simonwheatley, codeforthepeople, s1m0nd
 Tags: twitter, tweet, twitter search, hashtag, summize, twitter profile, tweet stream, tweet feed
 Requires at least: 3.1.0
 Tested up to: 3.5
-Stable tag: 3.3.5
+Stable tag: 3.3.6
 
 Track Twitter search results, a Twitter hashtag, or a Twitter profile using sidebar widgets.
 
@@ -82,7 +82,7 @@ OR:
 
 = v3.3.6 =
 
-Fixes a bug to restore caching of requests to the Twitter API.
+Fixes a bug to restore caching of requests to the Twitter API. Fixed a bug relating to displaying Emoji. 
 
 = v3.3.5 =
 
@@ -95,6 +95,8 @@ Fixes the plugin to work with Twitter's new API (and new constraints). After ins
 Tuesday 13 August 2013
 
 * BUGFIX: Restore caching of requests to Twitter API
+* BUGFIX: Emoji no longer break tweets
+* ENHANCEMENT: Optionally show Emoji
 
 = v3.3.5 =
 
