@@ -256,8 +256,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$transient_key = 'tt_profile-' . md5( serialize( $instance ) . serialize( $args ) );
 
 		if ( $output = get_transient( $transient_key ) ) {
-			// echo $output;
-			// return;
+			echo $output;
+			return;
 		}
 
 		$service = new TT_Service;
@@ -358,8 +358,8 @@ class TwitterTracker extends TwitterTracker_Plugin
 		$transient_key = 'tt_search-' . md5( serialize( $instance ) . $username . serialize( $args ) );
 
 		if ( $output = get_transient( $transient_key ) ) {
-			// echo $output;
-			// return;
+			echo $output;
+			return;
 		}
 
 		$service = new TT_Service;
