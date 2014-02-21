@@ -117,7 +117,7 @@ final class TT_Tweet {
 	 **/
 	public function set_twit( $twit ) {
 		$this->twit = $twit;
-		$this->twit_link = sprintf( 'http://twitter.com/%s/', $twit );
+		$this->twit_link = sprintf( 'https://twitter.com/%s/', $twit );
 	}
 
 	/**
