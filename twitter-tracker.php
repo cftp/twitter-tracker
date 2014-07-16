@@ -396,7 +396,7 @@ class TwitterTracker extends TwitterTracker_Plugin
 		set_transient( $transient_key, $output, apply_filters( 'tt_cache_expiry', 300, $transient_key, $username, $args ) );
 	}
 
-	public function & get()
+	public static function & get()
 	{
 	    static $instance;
 
