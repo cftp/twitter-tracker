@@ -1,0 +1,16 @@
+{
+    "name"       : "cftp/twitter-tracker",
+    "description": "Tracks the search results on Twitter search or Twitter profile in a sidebar widget.",
+    "homepage"   : "https://github.com/cftp/twitter-tracker/",
+    "type"       : "wordpress-plugin",
+    "license"    : "GPL-2.0+",
+    "authors"    : [
+            {
+                    "name"    : "Code For The People",
+                    "homepage": "http://codeforthepeople.com/"
+            }
+    ],
+    "require": {
+            "composer/installers": "~1.0"
+    }
+}
